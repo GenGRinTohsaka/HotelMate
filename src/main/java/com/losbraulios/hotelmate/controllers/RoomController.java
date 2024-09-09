@@ -15,7 +15,7 @@ import com.losbraulios.hotelmate.service.HabitacionService;
 
 @RestController
 @RequestMapping("hotelMate/v1/rooms")
-public class HabitacionesController {
+public class RoomController {
 
     @Autowired
     HabitacionService habitacionService;
