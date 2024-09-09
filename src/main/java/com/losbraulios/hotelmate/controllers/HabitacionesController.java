@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("hotelMate/v1/rooms")
 public class HabitacionesController {
 
-    
+        
 }
