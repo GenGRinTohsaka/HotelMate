@@ -17,17 +17,17 @@ import lombok.NoArgsConstructor;
 public class Employees {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long employeeId;
+    private Long idEmployee;
     @NotBlank
-    private String employeeName;
+    private String nameEmployee;
     @NotBlank
-    private String employeeLastName;
+    private String surnameEmployee;
     @NotBlank
-    private String employeePhone;
+    private String phoneEmployee;
     @NotBlank
     @Column(unique = true)
-    private String employeeEmail;
+    private String emailEmployee;
     @NotBlank
-    private String employeeRole;
+    private String roleEmployee;
 
 }
