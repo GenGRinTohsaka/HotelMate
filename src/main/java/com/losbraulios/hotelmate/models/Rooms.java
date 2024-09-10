@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,16 +16,16 @@ import lombok.NoArgsConstructor;
 public class Rooms {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long roomId;
-    @NotBlank
-    private long roomNumber;
-    @NotBlank
-    private double nightPrice;
-    @NotBlank
-    private double dailyPrice;
-    @NotBlank
+    private Long roomId;
+    @NotNull
+    private Long roomNumber;
+    @NotNull
+    private Double nightPrice;
+    @NotNull
+    private Double dailyPrice;
+    @NotNull
     private String roomType;
-    @NotBlank
+    @NotNull
     private String roomCapacity;
 
 }
