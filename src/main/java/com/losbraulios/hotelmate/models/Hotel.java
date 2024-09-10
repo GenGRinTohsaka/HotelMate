@@ -1,5 +1,6 @@
 package com.losbraulios.hotelmate.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,12 +17,14 @@ import lombok.NoArgsConstructor;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long hotelId;
+    private Long idHotel;
     @NotBlank
-    private String Address;
+    @Column(unique = true)
+    private String direction;
     @NotBlank
-    private String hotelName;
+    private String nameHotel;
     @NotBlank
+    @Column(unique = true)
     private String phone;
     @NotBlank
     private String category;
