@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idHotel;
+    private Long idHotel;
     @NotBlank
     @Column(unique = true)
     private String direccion;

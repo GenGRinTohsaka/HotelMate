@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.losbraulios.hotelmate.DTO.HotelRegisterDTO;
 import com.losbraulios.hotelmate.models.Hotel;
-import com.losbraulios.hotelmate.service.CloudinaryService;
 import com.losbraulios.hotelmate.service.HotelService;
 
 import jakarta.validation.Valid;
@@ -28,8 +27,6 @@ import jakarta.validation.Valid;
 public class HotelController {
     @Autowired
     HotelService hotelService;
-    @Autowired
-    CloudinaryService cloudinaryService;
 
     @GetMapping()
     public ResponseEntity<?> getHotels(){
@@ -67,9 +64,9 @@ public class HotelController {
                 return ResponseEntity.badRequest().body(res);
         }
         try {           
-            Long id = null;
+            Long idHotel = null;
             Hotel newHotel = new Hotel(
-                id,
+                idHotel,
                 hotel.getDireccion(),
                 hotel.getNombreHotel(),
                 hotel.getTelefono(),
