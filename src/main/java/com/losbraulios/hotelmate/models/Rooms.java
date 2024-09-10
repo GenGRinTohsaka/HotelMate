@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,19 +14,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Habitaciones {
+public class Rooms {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idHabitacion;
+    private Long roomId;
+    @NotNull
+    private Long roomNumber;
+    @NotNull
+    private Double nightPrice;
+    @NotNull
+    private Double dayPrice;
     @NotBlank
-    private long numeroHabitacion;
+    private String roomType;
     @NotBlank
-    private double precioNoche;
-    @NotBlank
-    private double precioDia;
-    @NotBlank
-    private String tipoHabitacion;
-    @NotBlank
-    private String capacidadHabitacion;
+    private String roomCapacity;
 
 }
