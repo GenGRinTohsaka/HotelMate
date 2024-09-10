@@ -18,12 +18,12 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idHotel;
     @NotBlank
-    private String direccion;
+    private String Address;
     @NotBlank
-    private String nombreHotel;
+    private String hotelName;
     @NotBlank
-    private String telefono;
+    private String phone;
     @NotBlank
-    private String categoria;
+    private String category;
 
 }
