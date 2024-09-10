@@ -2,8 +2,8 @@ package com.losbraulios.hotelmate.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.losbraulios.hotelmate.models.Rooms;
+import com.losbraulios.hotelmate.models.Room;
 
-public interface  HabitacionRepository extends JpaRepository <Rooms, Long>{
+public interface  RoomRepository extends JpaRepository <Room, Long>{
     
 }

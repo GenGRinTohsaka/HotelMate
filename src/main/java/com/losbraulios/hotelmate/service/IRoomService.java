@@ -2,14 +2,14 @@ package com.losbraulios.hotelmate.service;
 
 import java.util.List;
 
-import com.losbraulios.hotelmate.models.Rooms;
+import com.losbraulios.hotelmate.models.Room;
 
 public interface IRoomService {
-    List<Rooms> listRooms();
+    List<Room> listRooms();
 
-    Rooms getRooms(Long idRoom); 
-    Rooms register(Rooms room);
-    void eliminate(Rooms room);
+    Room getRooms(Long idRoom); 
+    Room register(Room room);
+    void eliminate(Room room);
 
     
 
