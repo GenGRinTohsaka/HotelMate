@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,7 +84,7 @@ public class HotelController {
         }
     }
 
-    @GetMapping("/{idHotel}")
+    @GetMapping("/search/{idHotel}")
     public ResponseEntity<?> searchHotel(@PathVariable Long idHotel) {
         Map<String, Object> res = new HashMap<>();
         try {
@@ -104,6 +105,34 @@ public class HotelController {
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
             res.put("message", "Error general al obtener el hotel");
+            res.put("error", e);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @DeleteMapping("/delete/{idHotel}")
+    public ResponseEntity<?> deleteHotel(@PathVariable Long idHotel) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Hotel hotel = hotelService.getHotel(idHotel);
+            if (hotel != null) {
+                hotelService.eliminate(hotel);
+                res.put("message", "Hotel eliminado con éxito");
+                return ResponseEntity.ok().body(res);
+            } else {
+                res.put("message", "No se encontró el hotel con ID: " + idHotel);
+                return ResponseEntity.status(404).body(res);
+            }
+        } catch (CannotCreateTransactionException e) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException e) {
+            res.put("message", "Error al eliminar el hotel de la base de datos");
+            res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception e) {
+            res.put("message", "Error general al eliminar el hotel");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
