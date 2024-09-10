@@ -32,6 +32,10 @@ public class HotelController {
     @Autowired
     HotelService hotelService;
 
+    /*
+     * Método listar 
+     * http://localhost:8081/hotelMate/v1/hotels
+     */
     @GetMapping()
     public ResponseEntity<?> getHotels(){
         Map<String, Object> res = new HashMap<>();
@@ -52,6 +56,10 @@ public class HotelController {
         } 
     }
 
+    /*
+     * Función que permite agregar a los hoteles
+     * http://localhost:8081/hotelMate/v1/hotels/register
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerHotel(
         @Valid @ModelAttribute HotelRegisterDTO hotel,
@@ -71,10 +79,10 @@ public class HotelController {
             Long idHotel = null;
             Hotel newHotel = new Hotel(
                 idHotel,
-                hotel.getDireccion(),
-                hotel.getNombreHotel(),
-                hotel.getTelefono(),
-                hotel.getCategoria()
+                hotel.getDirection(),
+                hotel.getNameHotel(),
+                hotel.getPhone(),
+                hotel.getCategory()
             );
             hotelService.register(newHotel);
             res.put("message","Hotel agregado correctamente");
@@ -86,6 +94,10 @@ public class HotelController {
         }
     }
 
+    /*
+     * Función que nos permite buscar pot el ID a un hotel
+     * http://localhost:8081/hotelMate/v1/hotels/search/{idHotel}
+     */
     @GetMapping("/search/{idHotel}")
     public ResponseEntity<?> searchHotel(@PathVariable Long idHotel) {
         Map<String, Object> res = new HashMap<>();
@@ -111,7 +123,11 @@ public class HotelController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
-
+    
+    /*
+     * Función que permite eliminar un hotel por medio de su ID
+     * http://localhost:8081/hotelMate/v1/hotels/delete/{idHotel}
+     */
     @DeleteMapping("/delete/{idHotel}")
     public ResponseEntity<?> deleteHotel(@PathVariable Long idHotel) {
         Map<String, Object> res = new HashMap<>();
@@ -140,7 +156,12 @@ public class HotelController {
         }
     }
 
-    @PutMapping("/{idHotel}")
+
+    /*
+     * Función para actualizar un Hotel por medio de su ID
+     * http://localhost:8081/hotelMate/v1/hotels/update/{idHotel}
+     */
+    @PutMapping("/update/{idHotel}")
     public ResponseEntity<?> updateHotel(@PathVariable Long idHotel, @RequestBody Hotel oldHotel) {
         Map<String, Object> res = new HashMap<>();
         try {

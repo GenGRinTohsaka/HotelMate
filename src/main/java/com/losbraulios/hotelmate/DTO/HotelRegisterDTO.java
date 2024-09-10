@@ -6,11 +6,11 @@ import lombok.Data;
 @Data
 public class HotelRegisterDTO {
     @NotBlank
-    private String direccion;
+    private String direction;
     @NotBlank
-    private String nombreHotel;
+    private String nameHotel;
     @NotBlank
-    private String telefono;
+    private String phone;
     @NotBlank
-    private String categoria;
+    private String category;
 }
