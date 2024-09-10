@@ -150,10 +150,10 @@ public class HotelController {
                 return ResponseEntity.status(404).body(res);
             }            
             // Actualizar los campos del hotel existente
-            newHotel.setDireccion(oldHotel.getDireccion());
-            newHotel.setNombreHotel(oldHotel.getNombreHotel());
-            newHotel.setTelefono(oldHotel.getTelefono());
-            newHotel.setCategoria(oldHotel.getCategoria());
+            newHotel.setDirection(oldHotel.getDirection());
+            newHotel.setNameHotel(oldHotel.getNameHotel());
+            newHotel.setPhone(oldHotel.getPhone());
+            newHotel.setCategory(oldHotel.getCategory());
 
             hotelService.register(newHotel);
             return ResponseEntity.ok().body(newHotel);

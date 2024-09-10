@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Habitaciones {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idHabitacion;
+    private long roomId;
     @NotBlank
-    private long numeroHabitacion;
+    private long roomNumber;
     @NotBlank
-    private double precioNoche;
+    private double nightPrice;
     @NotBlank
-    private double precioDia;
+    private double dayPrice;
     @NotBlank
-    private String tipoHabitacion;
+    private String roomType;
     @NotBlank
-    private String capacidadHabitacion;
+    private String roomCapacity;
 
 }

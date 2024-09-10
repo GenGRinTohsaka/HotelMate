@@ -20,13 +20,13 @@ public class Hotel {
     private Long idHotel;
     @NotBlank
     @Column(unique = true)
-    private String direccion;
+    private String direction;
     @NotBlank
-    private String nombreHotel;
+    private String nameHotel;
     @NotBlank
     @Column(unique = true)
-    private String telefono;
+    private String phone;
     @NotBlank
-    private String categoria;
+    private String category;
 
 }
