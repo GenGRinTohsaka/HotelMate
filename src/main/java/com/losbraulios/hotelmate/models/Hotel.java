@@ -16,14 +16,14 @@ import lombok.NoArgsConstructor;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idHotel;
+    private Long idHotel;
     @NotBlank
-    private String direccion;
+    private String direction;
     @NotBlank
-    private String nombreHotel;
+    private String nameHotel;
     @NotBlank
-    private String telefono;
+    private String phone;
     @NotBlank
-    private String categoria;
+    private String category;
 
 }
