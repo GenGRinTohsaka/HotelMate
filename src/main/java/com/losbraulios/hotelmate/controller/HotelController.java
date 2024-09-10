@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.losbraulios.hotelmate.DTO.HotelRegisterDTO;
-import com.losbraulios.hotelmate.configs.CloudinaryConfig;
+import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.service.CloudinaryService;
 import com.losbraulios.hotelmate.service.HotelService;
 
@@ -55,27 +53,35 @@ public class HotelController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerHotel(
-        @RequestPart("hotelPicture") MultipartFile hotelPicture,
         @Valid @ModelAttribute HotelRegisterDTO hotel,
         BindingResult result
     ){
         Map<String, Object> res = new HashMap<>();
-        if (result.hasErrors()) {
+        if(result.hasErrors()){
             List<String> errors = result.getFieldErrors()
-            .stream()
-            .map(error -> error.getDefaultMessage())
-            .collect(Collectors.toList());
-            res.put("message", "Error con las validaciones, Ingresar todos los campos");
-            res.put("Error",errors );
-            return  ResponseEntity.badRequest().body(res);
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+                res.put("message", "Error con las validaciones, Ingresa todos los campos");
+                res.put("Errors", errors);
+                return ResponseEntity.badRequest().body(res);
         }
         try {           
-        Map<String,Object> uploadResult = cloudinaryService
-        String img = uploadResult.get("url").toString();
-        
-
+            Long id = null;
+            Hotel newHotel = new Hotel(
+                id,
+                hotel.getDireccion(),
+                hotel.getNombreHotel(),
+                hotel.getTelefono(),
+                hotel.getCategoria()
+            );
+            hotelService.register(newHotel);
+            res.put("message","Hotel agregado correctamente");
+            return ResponseEntity.ok(res);
         } catch (Exception e) {
-
+            res.put("message", "Error al agregar Hotel, intente de nuevo mas tarde");
+            res.put("Error", e.getMessage());
+            return ResponseEntity.internalServerError().body(res);
         }
     }
 }
