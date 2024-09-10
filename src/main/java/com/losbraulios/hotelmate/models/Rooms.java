@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Habitaciones {
+public class Rooms {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long roomId;
