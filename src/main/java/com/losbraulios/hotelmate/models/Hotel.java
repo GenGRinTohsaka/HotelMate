@@ -28,5 +28,6 @@ public class Hotel {
     private String telefono;
     @NotBlank
     private String categoria;
+    private String hotelPicture;
 
 }
