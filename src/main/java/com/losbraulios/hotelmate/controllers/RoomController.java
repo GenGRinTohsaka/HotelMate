@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -152,6 +154,40 @@ public class RoomController {
             
         }
     }
-}
+
+        @PutMapping("/update/{roomId}")
+        public ResponseEntity<?> updateRoom(@PathVariable Long roomId, @RequestBody Rooms oldRoom){
+            Map<String,Object> res = new HashMap<>();
+            try{
+                Rooms newRoom = roomService.gRooms(roomId);
+                if(newRoom == null){
+                    res.put("message", "No se encontró habitacion con el id:" + roomId);
+                    return ResponseEntity.status(404).body(res);
+                }
+
+                newRoom.setDayPrice(oldRoom.getDayPrice());
+                newRoom.setNightPrice(oldRoom.getNightPrice());
+                newRoom.setRoomCapacity(oldRoom.getRoomCapacity());
+                newRoom.setRoomNumber(oldRoom.getRoomNumber());
+                newRoom.setRoomType(oldRoom.getRoomType());
+
+                roomService.register(newRoom);
+                return ResponseEntity.ok().body(newRoom);
+            }catch (CannotCreateTransactionException err) {
+                res.put("message", "Error al conectar con la base de datos");
+                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+                return ResponseEntity.status(503).body(res);
+            } catch (DataAccessException err) {
+                res.put("message", "Error al actualizar la habitacion en la base de datos");
+                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+                return ResponseEntity.status(503).body(res);
+            } catch (Exception err) {
+                res.put("message", "Error general al actualizar la habitacion");
+                res.put("error", err);
+                return ResponseEntity.internalServerError().body(res);
+            }
+        }
+    }
+
     
 
