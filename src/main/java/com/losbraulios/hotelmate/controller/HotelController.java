@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -133,6 +135,39 @@ public class HotelController {
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
             res.put("message", "Error general al eliminar el hotel");
+            res.put("error", e);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @PutMapping("/{idHotel}")
+    public ResponseEntity<?> updateHotel(@PathVariable Long idHotel, @RequestBody Hotel oldHotel) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Hotel newHotel = hotelService.getHotel(idHotel);
+            if (newHotel == null) {
+                res.put("message", "No se encontró el hotel con ID: " + idHotel);
+                return ResponseEntity.status(404).body(res);
+            }            
+            // Actualizar los campos del hotel existente
+            newHotel.setDireccion(oldHotel.getDireccion());
+            newHotel.setNombreHotel(oldHotel.getNombreHotel());
+            newHotel.setTelefono(oldHotel.getTelefono());
+            newHotel.setCategoria(oldHotel.getCategoria());
+
+            hotelService.register(newHotel);
+            return ResponseEntity.ok().body(newHotel);
+
+        } catch (CannotCreateTransactionException e) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException e) {
+            res.put("message", "Error al actualizar el hotel en la base de datos");
+            res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception e) {
+            res.put("message", "Error general al actualizar el hotel");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
