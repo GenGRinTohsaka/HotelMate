@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.losbraulios.hotelmate.service.HabitacionService;
+import com.losbraulios.hotelmate.service.RoomService;
 
 @RestController
 @RequestMapping("hotelMate/v1/rooms")
 public class RoomController {
 
     @Autowired
-    HabitacionService habitacionService;
+    RoomService roomService;
 
     /*Metodo para listar las habitaciones*/
     @GetMapping()
     public ResponseEntity<?> getRooms(){
         Map<String, Object> res = new HashMap<>();
         try{
-            return ResponseEntity.ok().body(habitacionService.listHabitaciones());
+            return ResponseEntity.ok().body(roomService.listHabitaciones());
         }catch(CannotCreateTransactionException err){
             res.put("message", "Error al conectar a la Base de Datos");
             res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
@@ -39,6 +39,7 @@ public class RoomController {
             res.put("Error",err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
+        
     }
 
 }
