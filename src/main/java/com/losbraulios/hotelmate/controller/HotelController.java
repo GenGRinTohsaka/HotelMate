@@ -12,6 +12,7 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,4 +82,31 @@ public class HotelController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
+
+    @GetMapping("/{idHotel}")
+    public ResponseEntity<?> searchHotel(@PathVariable Long idHotel) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Hotel hotel = hotelService.getHotel(idHotel);
+            if (hotel != null) {
+                return ResponseEntity.ok().body(hotel);
+            } else {
+                res.put("message", "Hotel no encontrado");
+                return ResponseEntity.status(404).body(res);
+            }
+        } catch (CannotCreateTransactionException e) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException e) {
+            res.put("message", "Error al consultar la base de datos");
+            res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception e) {
+            res.put("message", "Error general al obtener el hotel");
+            res.put("error", e);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
 }
