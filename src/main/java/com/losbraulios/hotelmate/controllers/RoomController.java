@@ -12,6 +12,7 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +21,6 @@ import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.service.RoomService;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.validation.Valid;
 
 @RestController
@@ -90,8 +89,35 @@ public class RoomController {
             res.put("error",err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
-     }   
-   
+    }
 
-    
-}
+        
+        @GetMapping("/search/{roomId}")
+        public ResponseEntity<?> searchRoom(@PathVariable Long roomId) {
+            Map<String,Object> res = new HashMap<>();
+            try{
+                Rooms rooms = roomService.gRooms(roomId);
+                if(rooms != null){
+                    return ResponseEntity.ok().body(rooms);
+                } else {
+                    res.put("message", "Habitacion no encontrada");
+                    return ResponseEntity.status(404).body(res);
+                }
+
+            }catch (CannotCreateTransactionException e) {
+                res.put("message", "Error al conectar con la base de datos");
+                res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+                return ResponseEntity.status(503).body(res);
+            } catch (DataAccessException e) {
+                res.put("message", "Error al consultar la base de datos");
+                res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+                return ResponseEntity.status(503).body(res);
+            } catch (Exception e) {
+                res.put("message", "Error general al obtener la habitacion");
+                res.put("error", e);
+                return ResponseEntity.internalServerError().body(res);
+            }
+        }
+        
+    }
+
