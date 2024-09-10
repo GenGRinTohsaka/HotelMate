@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.service.RoomService;
+
 
 import jakarta.validation.Valid;
 
@@ -104,20 +106,52 @@ public class RoomController {
                     return ResponseEntity.status(404).body(res);
                 }
 
-            }catch (CannotCreateTransactionException e) {
+            }catch (CannotCreateTransactionException err) {
                 res.put("message", "Error al conectar con la base de datos");
-                res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
                 return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException e) {
+            } catch (DataAccessException err) {
                 res.put("message", "Error al consultar la base de datos");
-                res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
                 return ResponseEntity.status(503).body(res);
-            } catch (Exception e) {
+            } catch (Exception err) {
                 res.put("message", "Error general al obtener la habitacion");
-                res.put("error", e);
+                res.put("error", err);
                 return ResponseEntity.internalServerError().body(res);
             }
         }
         
+        /*Metodo para eliminar habitaciones
+         *el link del metodo es: http://localhost:8081/hotelMate/v1/rooms/delete/{roomId}
+        */
+        @DeleteMapping("/delete/{roomId}")
+        public ResponseEntity<?> deleteRoom(@PathVariable Long roomId){
+            Map<String,Object> res = new HashMap<>();
+            try{
+                Rooms rooms = roomService.gRooms(roomId);
+                if(rooms != null){
+                    roomService.eliminate(rooms);
+                    res.put("message", "Habitacion eliminada con exito");
+                    return ResponseEntity.ok().body(res);
+                } else {
+                    res.put("message", "No se encontró la habitación con el ID:" + roomId);
+                    return ResponseEntity.status(404).body(res);
+                }
+            }  catch (CannotCreateTransactionException err) {
+                res.put("message", "Error al conectar con la base de datos");
+                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+                return ResponseEntity.status(503).body(res);
+            } catch (DataAccessException err) {
+                res.put("message", "Error al eliminar la habitacion de la base de datos");
+                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+                return ResponseEntity.status(503).body(res);
+            } catch (Exception err) {
+                res.put("message", "Error general al eliminar la habitacion");
+                res.put("error", err);
+                return ResponseEntity.internalServerError().body(res);
+            
+        }
     }
+}
+    
 
