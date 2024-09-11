@@ -24,7 +24,6 @@ import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.service.RoomService;
 
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -34,160 +33,180 @@ public class RoomController {
     @Autowired
     RoomService roomService;
 
-    /* Metodo para listar las habitaciones 
-     * La linea de coneccion para el metodo get es: http://localhost:8081/hotelMate/v1/rooms
-    */
+    /*
+     * Metodo para listar las habitaciones
+     * La linea de coneccion para el metodo get es:
+     * http://localhost:8081/hotelMate/v1/rooms
+     */
     @GetMapping()
-    public ResponseEntity<?> getRooms(){
+    public ResponseEntity<?> getRooms() {
         Map<String, Object> res = new HashMap<>();
-        try{
+        try {
             return ResponseEntity.ok().body(roomService.listHabitaciones());
-        }catch(CannotCreateTransactionException err){
+        } catch (CannotCreateTransactionException err) {
             res.put("message", "Error al conectar a la Base de Datos");
             res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
-        }catch(DataAccessException err){
+        } catch (DataAccessException err) {
             res.put("message", "Error al consultar con la base de datos");
-            res.put("Error",err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
-        }catch(Exception err){
+        } catch (Exception err) {
             res.put("message", "Error general al obtener los datos");
-            res.put("Error",err.getMessage());
+            res.put("Error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
-        
-    /*Metodo para crear habitaciones
-     *La linea de coneccion para crear habitaciones es: http://localhost:8081/hotelMate/v1/rooms/assignment
+
+    /*
+     * Metodo para crear habitaciones
+     * La linea de coneccion para crear habitaciones es:
+     * http://localhost:8081/hotelMate/v1/rooms/assignment
      */
-     @PostMapping("/assignment")
-     public ResponseEntity<?> register(
-        @Valid @ModelAttribute RoomsAssignmentDTO rooms,
-        BindingResult result
-     ){
-        Map<String,Object> res = new HashMap<>();
-        if(result.hasErrors()){
+    @PostMapping("/assignment")
+    public ResponseEntity<?> register(
+            @Valid @ModelAttribute RoomsAssignmentDTO rooms,
+            BindingResult result) {
+        Map<String, Object> res = new HashMap<>();
+        if (result.hasErrors()) {
             List<String> errors = result.getFieldErrors()
-            .stream()
-            .map(error -> error.getDefaultMessage())
-            .collect(Collectors.toList());
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.toList());
             res.put("message", "Error con las validaciones favor ingresar todos los campos");
             res.put("Errores", errors);
             return ResponseEntity.badRequest().body(res);
         }
-        try{
+        try {
             Long id = null;
             Rooms newRoom = new Rooms(
-                id,
-                rooms.getRoomNumber(),
-                rooms.getNightPrice(),
-                rooms.getDayPrice(),
-                rooms.getRoomType(),
-                rooms.getRoomCapacity()
-            );
+                    id,
+                    rooms.getRoomNumber(),
+                    rooms.getNightPrice(),
+                    rooms.getDayPrice(),
+                    rooms.getRoomType(),
+                    rooms.getRoomCapacity());
             roomService.register(newRoom);
             res.put("message", "Habitacion agregada correctamente");
             return ResponseEntity.ok(res);
-        }catch(Exception err){
+        } catch (Exception err) {
             res.put("message", "Error al guardar la habitacion, intente de nuevo");
-            res.put("error",err.getMessage());
+            res.put("error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
-        
-        @GetMapping("/search/{roomId}")
-        public ResponseEntity<?> searchRoom(@PathVariable Long roomId) {
-            Map<String,Object> res = new HashMap<>();
-            try{
-                Rooms rooms = roomService.gRooms(roomId);
-                if(rooms != null){
-                    return ResponseEntity.ok().body(rooms);
-                } else {
-                    res.put("message", "Habitacion no encontrada");
-                    return ResponseEntity.status(404).body(res);
-                }
-
-            }catch (CannotCreateTransactionException err) {
-                res.put("message", "Error al conectar con la base de datos");
-                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException err) {
-                res.put("message", "Error al consultar la base de datos");
-                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (Exception err) {
-                res.put("message", "Error general al obtener la habitacion");
-                res.put("error", err);
-                return ResponseEntity.internalServerError().body(res);
+    /*
+     * Esta función nos devuelve una habitacion especifico en base al id
+     * El link de la función es: http://localhost:8081/hotelMate/v1/rooms/search/{roomId}
+     */
+    @GetMapping("/search/{roomId}")
+    public ResponseEntity<?> searchRoom(@PathVariable Long roomId) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Rooms rooms = roomService.gRooms(roomId);
+            if (rooms != null) {
+                return ResponseEntity.ok().body(rooms);
+            } else {
+                res.put("message", "Habitacion no encontrada");
+                return ResponseEntity.status(404).body(res);
             }
+
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al consultar la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener la habitacion");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
         }
-        
-        /*Metodo para eliminar habitaciones
-         *el link del metodo es: http://localhost:8081/hotelMate/v1/rooms/delete/{roomId}
-        */
-        @DeleteMapping("/delete/{roomId}")
-        public ResponseEntity<?> deleteRoom(@PathVariable Long roomId){
-            Map<String,Object> res = new HashMap<>();
-            try{
-                Rooms rooms = roomService.gRooms(roomId);
-                if(rooms != null){
-                    roomService.eliminate(rooms);
-                    res.put("message", "Habitacion eliminada con exito");
-                    return ResponseEntity.ok().body(res);
-                } else {
-                    res.put("message", "No se encontró la habitación con el ID:" + roomId);
-                    return ResponseEntity.status(404).body(res);
-                }
-            }  catch (CannotCreateTransactionException err) {
-                res.put("message", "Error al conectar con la base de datos");
-                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException err) {
-                res.put("message", "Error al eliminar la habitacion de la base de datos");
-                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (Exception err) {
-                res.put("message", "Error general al eliminar la habitacion");
-                res.put("error", err);
-                return ResponseEntity.internalServerError().body(res);
+    }
+
+    /*
+     * Metodo para eliminar habitaciones
+     * el link del metodo es:
+     * http://localhost:8081/hotelMate/v1/rooms/delete/{roomId}
+     */
+    @DeleteMapping("/delete/{roomId}")
+    public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Rooms rooms = roomService.gRooms(roomId);
+            if (rooms != null) {
+                roomService.eliminate(rooms);
+                res.put("message", "Habitacion eliminada con exito");
+                return ResponseEntity.ok().body(res);
+            } else {
+                res.put("message", "No se encontró la habitación con el ID:" + roomId);
+                return ResponseEntity.status(404).body(res);
+            }
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al eliminar la habitacion de la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al eliminar la habitacion");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+
+        }
+    }
+
+    /*
+     * Esta función nos actualiza los datos
+     * El link de la función es: http://localhost:8081/hotelMate/v1/rooms/update/{roomId}
+     */
+    @PutMapping("/update/{roomId}")
+    public ResponseEntity<?> updateRoom(@PathVariable Long roomId, @RequestBody Rooms newRoom) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Rooms oldRoom = roomService.gRooms(roomId);
+            if (oldRoom == null) {
+                res.put("message", "No se encontró habitacion con el id:" + roomId);
+                return ResponseEntity.status(404).body(res);
+            }
+
+            //Todas estas validaciones son para que los datos anteriores tomen lugar de los valores null en el RequestBody
+            if (newRoom.getDayPrice() != null) {
+                oldRoom.setDayPrice(newRoom.getDayPrice());
+            }
+            if (newRoom.getNightPrice() != null) {
+                oldRoom.setNightPrice(newRoom.getNightPrice());
+            }
+            if (newRoom.getRoomCapacity() != null) {
+                oldRoom.setRoomCapacity(newRoom.getRoomCapacity());
+            }
+            if (newRoom.getRoomNumber() != null) {
+                oldRoom.setRoomNumber(newRoom.getRoomNumber());
+            }
+            if (newRoom.getRoomType() != null) {
+                oldRoom.setRoomType(newRoom.getRoomType());
+            }
+            roomService.register(oldRoom);
+            return ResponseEntity.ok().body(oldRoom);
             
+
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al actualizar la habitacion en la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al actualizar la habitacion");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
         }
     }
-
-        @PutMapping("/update/{roomId}")
-        public ResponseEntity<?> updateRoom(@PathVariable Long roomId, @RequestBody Rooms oldRoom){
-            Map<String,Object> res = new HashMap<>();
-            try{
-                Rooms newRoom = roomService.gRooms(roomId);
-                if(newRoom == null){
-                    res.put("message", "No se encontró habitacion con el id:" + roomId);
-                    return ResponseEntity.status(404).body(res);
-                }
-
-                newRoom.setDayPrice(oldRoom.getDayPrice());
-                newRoom.setNightPrice(oldRoom.getNightPrice());
-                newRoom.setRoomCapacity(oldRoom.getRoomCapacity());
-                newRoom.setRoomNumber(oldRoom.getRoomNumber());
-                newRoom.setRoomType(oldRoom.getRoomType());
-
-                roomService.register(newRoom);
-                return ResponseEntity.ok().body(newRoom);
-            }catch (CannotCreateTransactionException err) {
-                res.put("message", "Error al conectar con la base de datos");
-                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException err) {
-                res.put("message", "Error al actualizar la habitacion en la base de datos");
-                res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (Exception err) {
-                res.put("message", "Error general al actualizar la habitacion");
-                res.put("error", err);
-                return ResponseEntity.internalServerError().body(res);
-            }
-        }
-    }
-
-    
-
+}
