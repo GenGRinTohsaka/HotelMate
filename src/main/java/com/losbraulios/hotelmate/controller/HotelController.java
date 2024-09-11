@@ -162,22 +162,30 @@ public class HotelController {
      * http://localhost:8081/hotelMate/v1/hotels/update/{idHotel}
      */
     @PutMapping("/update/{idHotel}")
-    public ResponseEntity<?> updateHotel(@PathVariable Long idHotel, @RequestBody Hotel oldHotel) {
+    public ResponseEntity<?> updateHotel(@PathVariable Long idHotel, @RequestBody Hotel newHotel) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Hotel newHotel = hotelService.getHotel(idHotel);
-            if (newHotel == null) {
+            Hotel oldHotel = hotelService.getHotel(idHotel);
+            if (oldHotel == null) {
                 res.put("message", "No se encontró el hotel con ID: " + idHotel);
                 return ResponseEntity.status(404).body(res);
             }            
-            // Actualizar los campos del hotel existente
-            newHotel.setDirection(oldHotel.getDirection());
-            newHotel.setNameHotel(oldHotel.getNameHotel());
-            newHotel.setPhone(oldHotel.getPhone());
-            newHotel.setCategory(oldHotel.getCategory());
+            //Todas estas validaciones son para que los datos anteriores tomen lugar de los valores null en el RequestBody
+            if (newHotel.getDirection() != null) {
+                oldHotel.setDirection(newHotel.getDirection());
+            }
+            if (newHotel.getNameHotel() != null) {
+                oldHotel.setNameHotel(newHotel.getNameHotel());
+            }
+            if (newHotel.getPhone() != null) {
+                oldHotel.setPhone(newHotel.getPhone());
+            }
+            if (newHotel.getCategory() != null) {
+                oldHotel.setCategory(newHotel.getCategory());
+            }
 
-            hotelService.register(newHotel);
-            return ResponseEntity.ok().body(newHotel);
+            hotelService.register(oldHotel);
+            return ResponseEntity.ok().body(oldHotel);
 
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar con la base de datos");
