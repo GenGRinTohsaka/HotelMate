@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,21 +17,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employees {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEmployee;
+    private Long userId;
     @NotBlank
-    private String nameEmployee;
-    @NotBlank
-    private String surnameEmployee;
-    @NotBlank
-    private String phoneEmployee;
-    @Email
+    private String userName;
+    @Email  
     @NotBlank
     @Column(unique = true)
-    private String emailEmployee;
+    private String userEmail;
     @NotBlank
-    private String roleEmployee;
-
+    private String userPassword;
+    @NotNull
+    @OneToMany
+    private Employees employees;
 }
