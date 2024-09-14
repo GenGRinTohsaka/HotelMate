@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class RoomsAssignmentDTO {
 
+    
+    private Long roomId;
     @NotNull(message = "El numero de habitacion no puede estar vacio")
     private Long roomNumber;
     @NotNull(message = "El precio no puede ir vacio")
@@ -19,5 +21,5 @@ public class RoomsAssignmentDTO {
     private String roomCapacity;
     //Ahora con esto podemos trabajar el guardado con relación
     @NotNull(message = "No se selecciono hotel para asignar")
-    private Long roomId;
+    private Long idHotel;
 }
