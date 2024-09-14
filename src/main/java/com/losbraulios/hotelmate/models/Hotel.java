@@ -1,9 +1,12 @@
 package com.losbraulios.hotelmate.models;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,14 +19,18 @@ import lombok.NoArgsConstructor;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idHotel;
+    private Long idHotel;
     @NotBlank
-    private String direccion;
+    private String direction;
     @NotBlank
-    private String nombreHotel;
+    private String nameHotel;
     @NotBlank
-    private String telefono;
+    private String phone;
     @NotBlank
-    private String categoria;
+    private String category;
+
+
+     @OneToMany(mappedBy = "hotel")
+    private List<Rooms> rooms;  
 
 }
