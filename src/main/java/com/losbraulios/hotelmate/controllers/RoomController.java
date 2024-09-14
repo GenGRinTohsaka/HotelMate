@@ -78,15 +78,8 @@ public class RoomController {
             return ResponseEntity.badRequest().body(res);
         }
         try {
-            Long id = null;
-            Rooms newRoom = new Rooms(
-                    id,
-                    rooms.getRoomNumber(),
-                    rooms.getNightPrice(),
-                    rooms.getDayPrice(),
-                    rooms.getRoomType(),
-                    rooms.getRoomCapacity());
-            roomService.register(newRoom);
+           
+            Rooms room = roomService.register(rooms);
             res.put("message", "Habitacion agregada correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception err) {
