@@ -2,15 +2,18 @@ package com.losbraulios.hotelmate.service;
 
 import java.util.List;
 
+import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
+import com.losbraulios.hotelmate.DTO.RoomsResponseDTO;
 import com.losbraulios.hotelmate.models.Rooms;
 
 public interface IRoomService {
-    List<Rooms> listRooms();
+  //Método para listar habitaciones 
+  List<RoomsResponseDTO> myRooms(Long hotelId);
 
-    Rooms getRooms(Long idRoom); 
-    Rooms register(Rooms room);
-    void eliminate(Rooms room);
+  //Método para mostrar solo 1 habitacion por su Id
+  Rooms findByIdRoom(Long id);
 
-    
+  //Método para guardar una habitacion
+  Rooms save(RoomsAssignmentDTO roomDTO);
 
 }
