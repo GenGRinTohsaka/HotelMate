@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class EventsSaveDTO {
+public class EventsSaveDTO { 
+    private Long eventId;
     @NotNull(message =  "El nombre del evento no puede ir vacío")
     private String eventName;
     @NotNull(message = "La descripción del evento no puede ir vacío")
