@@ -12,6 +12,7 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,5 +85,36 @@ public class ServiceController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
+
+    /*Funcion encargada de devolver un servicio en base a su id
+     *El link de la funcion es: http://localhost:8081/hotelMate/v1/services/search/{serviceId}
+    */
+    @GetMapping("/search/{serviceId}")
+    public ResponseEntity<?> searchService(@PathVariable Long serviceId) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Services services = serviceService.findFieldById(serviceId);
+            if (services != null) {
+                return ResponseEntity.ok().body(services);
+            } else {
+                res.put("message", "Servicio no encontrado");
+                return ResponseEntity.status(404).body(res);
+            }
+
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al consultar la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener el servicio");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
 
 }
