@@ -1,7 +1,6 @@
 package com.losbraulios.hotelmate.DTO;
 
 import java.sql.Timestamp;
-import java.time.LocalTime;
 
 import com.losbraulios.hotelmate.models.Services;
 
@@ -16,9 +15,7 @@ public class EventsResponseDTO {
     private Long eventId;
     private String eventName;
     private String eventDescription;
-    private LocalTime startHour;
-    private LocalTime endHour;
     private Timestamp startDate;
     private Timestamp endDate;
-    private Services services;
+    private Services serviceId;
 }

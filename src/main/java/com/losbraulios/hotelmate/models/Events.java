@@ -30,16 +30,10 @@ public class Events {
     private String eventDescription;
     @NotNull
     @FutureOrPresent
-    private LocalTime startHour;
-    @NotNull
-    @FutureOrPresent
-    private LocalTime endHour;
-    @NotNull
-    @FutureOrPresent
     private Timestamp startDate;
     @NotNull
     @FutureOrPresent
-    private Timestamp endDate;
+    private Timestamp endDate; 
     @NotNull
     @OneToOne
     private Services services;
