@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,6 +112,37 @@ public class ServiceController {
             return ResponseEntity.status(503).body(res);
         } catch (Exception err) {
             res.put("message", "Error general al obtener el servicio");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    /*Esta funcion se encarga de eliminar un servicio de la base de datos
+     * El link de la funcion es: http://localhost:8081/hotelMate/v1/services/delete/{serviceId}
+     */
+    @DeleteMapping("/delete/{serviceId}")
+    public ResponseEntity<?> deleteService(@PathVariable Long serviceId) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Services services = serviceService.findFieldById(serviceId);
+            if (services != null) {
+                serviceService.eliminate(services);
+                res.put("message", "Servicio eliminado con éxito");
+                return ResponseEntity.ok().body(res);
+            } else {
+                res.put("message", "No se encontró el servicio con ID: " + serviceId);
+                return ResponseEntity.status(404).body(res);
+            }
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al eliminar el servicio de la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al eliminar el servicio");
             res.put("error", err);
             return ResponseEntity.internalServerError().body(res);
         }
