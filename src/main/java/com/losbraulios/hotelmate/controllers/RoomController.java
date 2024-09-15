@@ -39,10 +39,6 @@ public class RoomController {
     @Autowired
     HotelService hotelService;
     
-
-   
-  
-
     /*
      * Metodo para crear habitaciones
      * La linea de coneccion para crear habitaciones es:
