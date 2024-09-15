@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -148,5 +150,43 @@ public class ServiceController {
         }
     }
 
+    /*Esta funcion se encarga de actualizar un servicio en base al id
+     *El link de esta funcion es: http://localhost:8081/hotelMate/v1/services/update/{serviceId}
+    */
+    @PutMapping("/update/{serviceId}")
+    public ResponseEntity<?> updateService(@PathVariable Long serviceId, @RequestBody Services newService) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Services oldService = serviceService.findFieldById(serviceId);
+            if (oldService == null) {
+                res.put("message", "No se encontró el servicio con ID: " + serviceId);
+                return ResponseEntity.status(404).body(res);
+            }            
+            //Todas estas validaciones son para que los datos anteriores tomen lugar de los valores null en el RequestBody
+            if (newService.getServiceName() != null) {
+                oldService.setServiceName(newService.getServiceName());
+            }
+            if (newService.getServiceDescription() != null) {
+                oldService.setServiceDescription(newService.getServiceDescription());
+            }
+            
+
+            serviceService.save(oldService);
+            return ResponseEntity.ok().body(oldService);
+
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al actualizar el servicio en la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al actualizar el servicio");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
 
 }
