@@ -6,7 +6,7 @@ import com.losbraulios.hotelmate.DTO.EventsSaveDTO;
 import com.losbraulios.hotelmate.models.Events;
 
 public interface IEventsService {
-    List<EventsResponseDTO> myEvents(Long serviceId);
+    List<EventsResponseDTO> myEvents();
 
     Events findByIdEvents(Long eventId);
 

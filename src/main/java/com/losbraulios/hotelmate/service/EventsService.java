@@ -20,10 +20,10 @@ public class EventsService implements IEventsService{
     @Autowired
     ServiceService servicesService;
 
+
     @Override
-    public List<EventsResponseDTO> myEvents(Long serviceId) {
-        Services services = servicesService.findFieldById(serviceId);
-        List<Events> events = eventsRepository.findByServices(services);
+    public List<EventsResponseDTO> myEvents() {
+        List<Events> events = eventsRepository.findAll();
         return events.stream().map(event -> new EventsResponseDTO(event.getEventId(),
         event.getEventName(),
         event.getEventDescription(),
@@ -63,7 +63,16 @@ public class EventsService implements IEventsService{
     }
 
     private EventsResponseDTO responseDTO(Events events){
-        Services services = events.getServices();
-        
+
+        EventsResponseDTO dto = new EventsResponseDTO(
+            events.getEventId(),
+            events.getEventName(),
+            events.getEventDescription(),
+            events.getStartDate(),
+            events.getEndDate(),
+            events.getServices()
+        );
+
+        return dto;
     }
 }
