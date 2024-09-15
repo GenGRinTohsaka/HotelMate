@@ -16,4 +16,7 @@ public interface IRoomService {
   //Método para guardar una habitacion
   Rooms save(RoomsAssignmentDTO roomDTO);
 
+
+    //Metodo para eliminar habitacion  
+    void eliminate(Rooms room);
 }

@@ -10,7 +10,6 @@ import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.DTO.RoomsResponseDTO;
 import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.models.Rooms;
-import com.losbraulios.hotelmate.repository.HotelRepository;
 import com.losbraulios.hotelmate.repository.RoomRepository;
 
 @Service
@@ -19,24 +18,24 @@ public class RoomService implements IRoomService{
     RoomRepository roomRepository;
 
     @Autowired
-    HotelRepository hotelRepository;
+    HotelService hotelService;
 
     // Método para listar habitaciones por hotel
     @Override
     public List<RoomsResponseDTO> myRooms(Long hotelId) {
-        Hotel hotel = hotelRepository.findById(hotelId).orElse(null);
-        if (hotel != null) {
-            List<Rooms> rooms = roomRepository.findByHotel(hotel);
-            return rooms.stream().map(room -> new RoomsResponseDTO(
-                room.getRoomId(),
-                room.getRoomNumber(),
-                room.getRoomType(),
-                room.getRoomCapacity(),
-                // Obtenemos el nombre del hotel
-                room.getHotel().get
-            )).collect(Collectors.toList());
-        }
-        return null;
+        Hotel hotel = hotelService.getHotel(hotelId);
+        List<Rooms> rooms = roomRepository.findByHotel(hotel);
+        return rooms.stream()
+            .map(room ->  new RoomsResponseDTO( room.getRoomId(),
+            room.getRoomNumber(),
+            room.getNightPrice(),
+            room.getDayPrice(),
+            room.getRoomType(),
+            room.getRoomCapacity(),
+            room.getHotel()))
+            .collect(Collectors.toList());
+        
+        
     }
 
     // Método para encontrar una habitación por su ID
@@ -48,14 +47,17 @@ public class RoomService implements IRoomService{
     // Método para guardar una nueva habitación
     @Override
     public Rooms save(RoomsAssignmentDTO roomDTO) {
+        
         // Busca el hotel con el ID proporcionado en el DTO
-        Hotel hotel = hotelRepository.findById(roomDTO.getRoomId()).orElse(null);
+        Hotel hotel = hotelService.getHotel(roomDTO.getIdHotel());
     
         // Verifica que el hotel exista
-        if (hotel != null) {
+        
+        
             // Crea una nueva instancia de Rooms con los datos del DTO y el hotel
             Rooms room = new Rooms(
-                null, // id será null para una nueva entidad, será generado automáticamente
+                // id será null para una nueva entidad, será generado automáticamente
+                roomDTO.getRoomId(), 
                 roomDTO.getRoomNumber(),
                 roomDTO.getNightPrice(),
                 roomDTO.getDayPrice(),
@@ -66,6 +68,12 @@ public class RoomService implements IRoomService{
     
             // Guarda la habitación en la base de datos y retorna la entidad guardada
             return roomRepository.save(room);
-        }
+            
+        
+    }
+
+    @Override
+    public void eliminate(Rooms room) {
+        roomRepository.delete(room);
     }
 }
