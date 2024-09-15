@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
+import com.losbraulios.hotelmate.DTO.RoomsResponseDTO;
+import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.models.Rooms;
+import com.losbraulios.hotelmate.service.HotelService;
 import com.losbraulios.hotelmate.service.RoomService;
 
 import jakarta.validation.Valid;
@@ -33,30 +36,12 @@ public class RoomController {
     @Autowired
     RoomService roomService;
 
-    /*
-     * Metodo para listar las habitaciones
-     * La linea de coneccion para el metodo get es:
-     * http://localhost:8081/hotelMate/v1/rooms
-     */
-    @GetMapping()
-    public ResponseEntity<?> getRooms() {
-        Map<String, Object> res = new HashMap<>();
-        try {
-            return ResponseEntity.ok().body(roomService.listHabitaciones());
-        } catch (CannotCreateTransactionException err) {
-            res.put("message", "Error al conectar a la Base de Datos");
-            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-            return ResponseEntity.status(503).body(res);
-        } catch (DataAccessException err) {
-            res.put("message", "Error al consultar con la base de datos");
-            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-            return ResponseEntity.status(503).body(res);
-        } catch (Exception err) {
-            res.put("message", "Error general al obtener los datos");
-            res.put("Error", err.getMessage());
-            return ResponseEntity.internalServerError().body(res);
-        }
-    }
+    @Autowired
+    HotelService hotelService;
+    
+
+   
+  
 
     /*
      * Metodo para crear habitaciones
@@ -78,16 +63,12 @@ public class RoomController {
             return ResponseEntity.badRequest().body(res);
         }
         try {
-            Long id = null;
-            Rooms newRoom = new Rooms(
-                    id,
-                    rooms.getRoomNumber(),
-                    rooms.getNightPrice(),
-                    rooms.getDayPrice(),
-                    rooms.getRoomType(),
-                    rooms.getRoomCapacity());
-            roomService.register(newRoom);
+           if(rooms.getRoomId() == null){
+            rooms.setRoomId(null);
+           }
+            Rooms room = roomService.save(rooms);
             res.put("message", "Habitacion agregada correctamente");
+            res.put("habitacion", room);
             return ResponseEntity.ok(res);
         } catch (Exception err) {
             res.put("message", "Error al guardar la habitacion, intente de nuevo");
@@ -98,18 +79,18 @@ public class RoomController {
 
     /*
      * Esta función nos devuelve una habitacion especifico en base al id
-     * El link de la función es: http://localhost:8081/hotelMate/v1/rooms/search/{roomId}
+     * El link de la función es: http://localhost:8081/hotelMate/v1/rooms/search/{hotelId}
      */
-    @GetMapping("/search/{roomId}")
-    public ResponseEntity<?> searchRoom(@PathVariable Long roomId) {
+    @GetMapping("/search/{hotelId}")
+    public ResponseEntity<?> searchRoom(@PathVariable Long hotelId) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Rooms rooms = roomService.gRooms(roomId);
-            if (rooms != null) {
-                return ResponseEntity.ok().body(rooms);
-            } else {
-                res.put("message", "Habitacion no encontrada");
+            List<RoomsResponseDTO> rooms = roomService.myRooms(hotelId);
+            if(rooms == null){
+                res.put("message", "No existen habitaciones asignadas al hotel");
                 return ResponseEntity.status(404).body(res);
+            }else{
+                return ResponseEntity.ok(rooms);
             }
 
         } catch (CannotCreateTransactionException err) {
@@ -121,7 +102,7 @@ public class RoomController {
             res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception err) {
-            res.put("message", "Error general al obtener la habitacion");
+            res.put("message", "Error general al obtener las habitaciones");
             res.put("error", err);
             return ResponseEntity.internalServerError().body(res);
         }
@@ -136,7 +117,7 @@ public class RoomController {
     public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Rooms rooms = roomService.gRooms(roomId);
+            Rooms rooms = roomService.findByIdRoom(roomId);
             if (rooms != null) {
                 roomService.eliminate(rooms);
                 res.put("message", "Habitacion eliminada con exito");
@@ -166,33 +147,39 @@ public class RoomController {
      * El link de la función es: http://localhost:8081/hotelMate/v1/rooms/update/{roomId}
      */
     @PutMapping("/update/{roomId}")
-    public ResponseEntity<?> updateRoom(@PathVariable Long roomId, @RequestBody Rooms newRoom) {
+    public ResponseEntity<?> updateRoom(@PathVariable Long roomId, @RequestBody RoomsAssignmentDTO newRoom) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Rooms oldRoom = roomService.gRooms(roomId);
+            Rooms oldRoom = roomService.findByIdRoom(roomId);
+            Hotel hotel = hotelService.getHotel(newRoom.getIdHotel());
             if (oldRoom == null) {
                 res.put("message", "No se encontró habitacion con el id:" + roomId);
                 return ResponseEntity.status(404).body(res);
             }
 
             //Todas estas validaciones son para que los datos anteriores tomen lugar de los valores null en el RequestBody
-            if (newRoom.getDayPrice() != null) {
-                oldRoom.setDayPrice(newRoom.getDayPrice());
+            if (newRoom.getDayPrice() == null) {
+                newRoom.setDayPrice(oldRoom.getDayPrice());
             }
-            if (newRoom.getNightPrice() != null) {
-                oldRoom.setNightPrice(newRoom.getNightPrice());
+            if (newRoom.getNightPrice() == null) {
+                newRoom.setNightPrice(oldRoom.getNightPrice());
             }
-            if (newRoom.getRoomCapacity() != null) {
-                oldRoom.setRoomCapacity(newRoom.getRoomCapacity());
+            if (newRoom.getRoomCapacity() == null) {
+                newRoom.setRoomCapacity(oldRoom.getRoomCapacity());
             }
-            if (newRoom.getRoomNumber() != null) {
-                oldRoom.setRoomNumber(newRoom.getRoomNumber());
+            if (newRoom.getRoomNumber() == null) {
+                newRoom.setRoomNumber(oldRoom.getRoomNumber());
             }
-            if (newRoom.getRoomType() != null) {
-                oldRoom.setRoomType(newRoom.getRoomType());
+            if (newRoom.getRoomType() == null) {
+                newRoom.setRoomType(oldRoom.getRoomType());
+            }if(newRoom.getIdHotel() == null){
+                newRoom.setIdHotel(hotel.getIdHotel());
+            }if(newRoom.getRoomId() == null){
+                newRoom.setRoomId(oldRoom.getRoomId());
             }
-            roomService.register(oldRoom);
-            return ResponseEntity.ok().body(oldRoom);
+            
+            roomService.save(newRoom);
+            return ResponseEntity.ok().body(newRoom);
             
 
         } catch (CannotCreateTransactionException err) {
