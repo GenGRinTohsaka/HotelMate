@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServicesResponseDTO {
-
     private Long serviceId;
     private String serviceName;
     private String serviceDescription;
