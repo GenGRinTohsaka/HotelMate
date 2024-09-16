@@ -63,6 +63,10 @@ public class EventsController {
         }
     }
 
+    /*
+     * Esta funcion se encarga de registrar los eventos
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/save
+     */
     @PostMapping("/save")
     public ResponseEntity<?> saveEvent(
         @Valid @ModelAttribute EventsSaveDTO eventDTO,
@@ -89,6 +93,10 @@ public class EventsController {
         }
     }
 
+    /*
+     * Esta funcion se encarga de devolver un evento por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/search/{eventId}
+     */
     @GetMapping("/search/{eventId}")
     public ResponseEntity<?> myEventById(@PathVariable Long eventId){
         Map<String, Object> res = new HashMap<>();
@@ -115,6 +123,10 @@ public class EventsController {
         }
     }
 
+    /*
+     * Esta funcion se encarga de eliminar un evento por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/delete/{eventId}
+     */
     @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
         Map<String, Object> res = new HashMap<>();
@@ -143,29 +155,31 @@ public class EventsController {
         }
     }
 
+    
+    /*
+     * Esta funcion se encarga de actualizar un evento el cual se busca por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/update/{eventId}
+     */
     @PutMapping("/update/{eventId}")
     public ResponseEntity<?> updateMyEvent(@PathVariable Long eventId, @RequestBody EventsSaveDTO newEvents){
         Map<String, Object> res = new HashMap<>();
         try {
             Events oldEvents = eventsService.findByIdEvents(eventId);
             Services services = serviceService.findFieldById(newEvents.getServiceId());
-            if (oldEvents != null) {
-                res.put("message","No se encontro un evento con el ID" + eventId);
+            if (oldEvents == null) {
+                res.put("message","No se encontro un evento con el ID " + eventId);
                 return ResponseEntity.status(404).body(res);
             }
 
-            oldEvents.setEventName(newEvents.getEventName());
-            oldEvents.setEventDescription(newEvents.getEventDescription());
-            oldEvents.setStartDate(Timestamp.valueOf(newEvents.getStartDate()));
-            oldEvents.setEndDate(Timestamp.valueOf(newEvents.getEndDate()));
-            oldEvents.setServices(services);
-
-        // Validar que las fechas sean futuras o presentes
-            LocalDateTime now = LocalDateTime.now();
-            if (newEvents.getStartDate().isBefore(now) || newEvents.getEndDate().isBefore(now)) {
-            res.put("message", "Las fechas de inicio y fin deben ser futuras o presentes");
-            return ResponseEntity.status(400).body(res);
-            }   
+            if (newEvents.getEventName() == null) {
+                newEvents.setEventName(oldEvents.getEventName());
+            }
+            if (newEvents.getEventDescription() == null) {
+                newEvents.setEventDescription(oldEvents.getEventDescription());
+            }
+            if (newEvents.getServiceId() == null) {
+                newEvents.setServiceId(services.getServiceId());
+            }
 
             eventsService.save(newEvents);
             return ResponseEntity.ok().body(newEvents);
