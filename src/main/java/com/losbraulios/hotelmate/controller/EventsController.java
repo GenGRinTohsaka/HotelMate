@@ -1,7 +1,5 @@
 package com.losbraulios.hotelmate.controller;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +115,7 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al obtener el servicio");
+            res.put("message", "Error general al obtener el evento buscado");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
@@ -149,7 +147,7 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al eliminar el servicio");
+            res.put("message", "Error general al cancelar el evento");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
@@ -193,7 +191,7 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al actualizar la habitacion");
+            res.put("message", "Error general al actualizar el evento");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
