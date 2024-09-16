@@ -163,12 +163,11 @@ public class EventsController {
         Map<String, Object> res = new HashMap<>();
         try {
             Events oldEvents = eventsService.findByIdEvents(eventId);
-            Services services = serviceService.findFieldById(newEvents.getServiceId());
+            Services services = serviceService.findFieldById(oldEvents.getServices().getServiceId());
             if (oldEvents == null) {
                 res.put("message","No se encontro un evento con el ID " + eventId);
                 return ResponseEntity.status(404).body(res);
             }
-
             if (newEvents.getEventName() == null) {
                 newEvents.setEventName(oldEvents.getEventName());
             }
@@ -177,17 +176,21 @@ public class EventsController {
             }
             if (newEvents.getServiceId() == null) {
                 newEvents.setServiceId(services.getServiceId());
+            } if(newEvents.getEndDate() == null){
+                newEvents.setEndDate(oldEvents.getEndDate().toLocalDateTime());
+            } if(newEvents.getStartDate() == null){
+                newEvents.setStartDate(oldEvents.getStartDate().toLocalDateTime());
+            } if(newEvents.getEventId() == null){
+                newEvents.setEventId(eventId);
             }
-
             eventsService.save(newEvents);
             return ResponseEntity.ok().body(newEvents);
-
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar con la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al actualizar la habitacion en la base de datos");
+            res.put("message", "Error al actualizar el evento en la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {

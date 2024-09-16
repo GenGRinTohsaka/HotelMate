@@ -10,6 +10,7 @@ import lombok.Data;
 
 @Data
 public class EventsSaveDTO {
+    private Long eventId;
     @NotBlank(message =  "El nombre del evento no puede ir vacío")
     private String eventName;
     @NotBlank(message = "La descripción del evento no puede ir vacío")
