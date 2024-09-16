@@ -2,7 +2,6 @@ package com.losbraulios.hotelmate.controller;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.sql.Time;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,15 +69,15 @@ public class EventsController {
         BindingResult result
     ){
         Map<String, Object> res = new HashMap<>();
-        if (result.hasErrors()) {
+        if(result.hasErrors()){
             List<String> errors = result.getFieldErrors()
-                    .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
-            res.put("message", "Error con las validaciones favor ingresar todos los campos");
-            res.put("Errores", errors);
-            return ResponseEntity.badRequest().body(res);       
-        }try {
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+                res.put("Errors", errors);
+                return ResponseEntity.badRequest().body(res);
+        }   
+        try {
             Events events = eventsService.save(eventDTO);
             res.put("message", "Evento guardado exitosamente");
             res.put("Evento", events);

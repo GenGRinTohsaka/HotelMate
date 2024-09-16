@@ -53,7 +53,7 @@ public class EventsService implements IEventsService{
             );
             return eventsRepository.save(event);
         } catch(Exception e){
-            throw new IllegalArgumentException("Error al parsear las fechas");
+            throw new IllegalArgumentException("Error al parsear las fechas", e);
         }
     }
 
