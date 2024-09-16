@@ -4,9 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,22 +13,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rooms {
+public class Services {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
-    @NotNull
-    private Long roomNumber;
-    @NotNull
-    private Double nightPrice;
-    @NotNull
-    private Double dayPrice;
+    private Long serviceId;
     @NotBlank
-    private String roomType;
+    private String serviceName;
     @NotBlank
-    private String roomCapacity;
-    @NotNull
-    @ManyToOne
-    private Hotel hotel;
-
+    private String serviceDescription;
 }
