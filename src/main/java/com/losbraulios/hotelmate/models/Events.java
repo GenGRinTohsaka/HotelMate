@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 public class Events {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+    private Long idEvent;
     @NotBlank
-    private String eventName;
+    private String nameEvent;
     @NotBlank
-    private String eventDescription;
+    private String descriptionEvent;
     @NotNull
     @FutureOrPresent
     private LocalTime startHour;
