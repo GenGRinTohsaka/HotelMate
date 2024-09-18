@@ -20,15 +20,15 @@ import lombok.NoArgsConstructor;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long idUser;
     @NotBlank
-    private String userName;
+    private String nameUser;
     @Email  
     @NotBlank
     @Column(unique = true)
-    private String userEmail;
+    private String emailUser;
     @NotBlank
-    private String userPassword;
+    private String passwordUser;
     @NotNull
     @OneToMany
     private Clients clients;
