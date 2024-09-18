@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 public class Bills {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long billId;
+    private Long idBill;
     @NotNull
-    private Double billTotal;
+    private Double totalBill;
     @NotBlank
     private String paymentMethod;
     @NotNull
