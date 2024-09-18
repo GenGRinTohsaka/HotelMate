@@ -31,5 +31,8 @@ public class Users {
     private String userPassword;
     @NotNull
     @OneToMany
+    private Clients clients;
+    @NotNull
+    @OneToMany
     private Employees employees;
 }
