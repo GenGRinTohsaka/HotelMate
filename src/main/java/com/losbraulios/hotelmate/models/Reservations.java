@@ -2,10 +2,13 @@ package com.losbraulios.hotelmate.models;
 
 import java.security.Timestamp;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,5 +32,10 @@ public class Reservations {
     @NotNull
     @FutureOrPresent
     private Timestamp endDate;
-    
+    @NotNull
+    @ManyToMany
+    private Room room;
+    @NotNull
+    @OneToMany
+    private Clients clients;
 }
