@@ -1,9 +1,11 @@
 package com.losbraulios.hotelmate.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,19 +15,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Room {
+public class Clients {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long roomId;
+    private Long idClient;
     @NotBlank
-    private long roomNumber;
+    private String nit;
     @NotBlank
-    private double nightPrice;
+    private String nameClient;
     @NotBlank
-    private double dayPrice;
+    private String surnameClient;
+    @Email
     @NotBlank
-    private String roomType;
+    @Column(unique = true)
+    private String emailClint;
     @NotBlank
-    private String roomCapacity;
+    private String phoneClient;
 
 }
