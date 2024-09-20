@@ -18,6 +18,6 @@ public interface IBillService {
      Bills save(BillSaveDTO billDTO);
 
     //Metodo para eliminar una factura  
-     Bills eliminate(Bills bill);
+     void eliminate(Bills bill);
 
 }
