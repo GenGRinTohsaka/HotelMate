@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.losbraulios.hotelmate.models.Clients;
 
-public interface IClients {
+public interface IClientsService {
     List<Clients> listClients();
 
     Clients getClients(Long idClient);
