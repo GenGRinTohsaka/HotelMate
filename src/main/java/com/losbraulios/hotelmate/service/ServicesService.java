@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.losbraulios.hotelmate.models.Services;
 import com.losbraulios.hotelmate.repository.ServicesRepository;
+import com.losbraulios.hotelmate.service.IService.IServicesService;
+
 
 @Service
 public class ServicesService implements IServicesService{

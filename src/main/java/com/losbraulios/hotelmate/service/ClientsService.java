@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.repository.ClientsRepository;
+import com.losbraulios.hotelmate.service.IService.IClientsService;
 
 @Service
 public class ClientsService implements IClientsService{

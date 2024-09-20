@@ -1,12 +1,12 @@
 package com.losbraulios.hotelmate.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.repository.RoomRepository;
+import com.losbraulios.hotelmate.service.IService.IRoomService;
+
 
 @Service
 public class RoomService implements IRoomService{
