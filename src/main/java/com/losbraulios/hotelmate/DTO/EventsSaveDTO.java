@@ -1,30 +1,26 @@
 package com.losbraulios.hotelmate.DTO;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class EventsSaveDTO { 
+public class EventsSaveDTO {
     private Long eventId;
-    @NotNull(message =  "El nombre del evento no puede ir vacío")
+    @NotBlank(message =  "El nombre del evento no puede ir vacío")
     private String eventName;
-    @NotNull(message = "La descripción del evento no puede ir vacío")
+    @NotBlank(message = "La descripción del evento no puede ir vacío")
     private String eventDescription;
-    @NotNull(message = "La hora de inicio no puede ir vacía")
-    @FutureOrPresent
-    private LocalTime startHour;
-    @NotNull(message = "La hora final no puede ir vacía")
-    @FutureOrPresent
-    private LocalTime endHour;
     @NotNull(message = "El día de inicio no pude ir vacio")
     @FutureOrPresent
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @NotNull(message = "El día final no puede ir vacío")
     @FutureOrPresent
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     @NotNull(message = "No selecciono un servicio")
     private Long serviceId;
 }

@@ -9,4 +9,5 @@ import com.losbraulios.hotelmate.models.Services;
 public interface EventsRepository extends JpaRepository<Events, Long>{
 
     List<Events> findByServices(Services services);
+    
 }

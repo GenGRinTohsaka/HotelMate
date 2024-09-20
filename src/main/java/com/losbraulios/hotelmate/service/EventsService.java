@@ -1,5 +1,5 @@
 package com.losbraulios.hotelmate.service;
-
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,15 +20,13 @@ public class EventsService implements IEventsService{
     @Autowired
     ServicesService servicesService;
 
+
     @Override
-    public List<EventsResponseDTO> myEvents(Long serviceId) {
-        Services services = servicesService.getServices(serviceId);
-        List<Events> events = eventsRepository.findByServices(services);
+    public List<EventsResponseDTO> myEvents() {
+        List<Events> events = eventsRepository.findAll();
         return events.stream().map(event -> new EventsResponseDTO(event.getEventId(),
         event.getEventName(),
         event.getEventDescription(),
-        event.getStartHour(),
-        event.getEndHour(),
         event.getStartDate(),
         event.getEndDate(),
         event.getServices())).collect(Collectors.toList());
@@ -41,21 +39,40 @@ public class EventsService implements IEventsService{
 
     @Override
     public Events save(EventsSaveDTO eventDTO) {
-       Services services = servicesService.getServices(eventDTO.getServiceId());
-       Events event = new Events(
-        eventDTO.getEventId(),
-        eventDTO.getEventName(),
-        eventDTO.getEventDescription(),
-        eventDTO.getStartHour(),
-        eventDTO.getEndHour(),
-        eventDTO.getStartDate(),
-        services
-       );
-       return eventsRepository.save(event);
+        try{
+            Timestamp startDate = Timestamp.valueOf(eventDTO.getStartDate());
+            Timestamp endDate = Timestamp.valueOf(eventDTO.getEndDate());   
+            Services services = servicesService.findFieldById(eventDTO.getServiceId());
+            Events event = new Events(
+            eventDTO.getEventId(),
+            eventDTO.getEventName(),
+            eventDTO.getEventDescription(),
+            startDate,
+            endDate,
+            services
+            );
+            return eventsRepository.save(event);
+        } catch(Exception e){
+            throw new IllegalArgumentException("Error al parsear las fechas", e);
+        }
     }
 
     @Override
     public void eliminate(Events events) {
         eventsRepository.delete(events);
+    }
+
+    private EventsResponseDTO responseDTO(Events events){
+
+        EventsResponseDTO dto = new EventsResponseDTO(
+            events.getEventId(),
+            events.getEventName(),
+            events.getEventDescription(),
+            events.getStartDate(),
+            events.getEndDate(),
+            events.getServices()
+        );
+
+        return dto;
     }
 }

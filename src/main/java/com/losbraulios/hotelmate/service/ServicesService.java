@@ -31,5 +31,10 @@ public class ServicesService implements IServicesService{
     @Override
     public void eliminate(Services services) {
         servicesRepository.delete(services);
+    }
+
+    public Services findFieldById(Long serviceId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findFieldById'");
     } 
 }
