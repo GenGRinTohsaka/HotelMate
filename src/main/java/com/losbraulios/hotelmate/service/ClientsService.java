@@ -1,10 +1,8 @@
 package com.losbraulios.hotelmate.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.repository.ClientsRepository;
 
@@ -20,14 +18,12 @@ public class ClientsService implements IClientsService{
 
     @Override
     public Clients getClients(Long idClient) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getClients'");
+        return clientsRepository.findById(idClient).orElse(null);
     }
 
     @Override
     public Clients register(Clients clients) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'register'");
+        return clientsRepository.save(clients);
     }
 
     @Override
