@@ -2,16 +2,22 @@ package com.losbraulios.hotelmate.service;
 
 import java.util.List;
 
+import com.losbraulios.hotelmate.DTO.BillResponseDTO;
+import com.losbraulios.hotelmate.DTO.BillSaveDTO;
 import com.losbraulios.hotelmate.models.Bills;
 
 public interface IBillService {
-    // listar facturas
-    List<Bills> listBills();
-    // buscar factura por Id
-    Bills findFieldById(Long id);
-    // gardar UNA factura
-    Bills save(Bills bill);
-    // eliminar una Factura
-    void eliminate(Bills bill);
+    
+     //Método para listar facturas 
+    List<BillResponseDTO> allBills(Long clientelId);
+
+     //Método para mostrar solo 1 factura por su Id
+     Bills findFieldById(Long id);
+
+    //Método para guardar una factura
+     Bills save(BillSaveDTO billDTO);
+
+    //Metodo para eliminar una factura  
+     Bills eliminate(Bills bill);
 
 }
