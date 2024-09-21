@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Reports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idReportLong;
+    private Long idReport;
     @NotBlank
     private String descriptionReport;
     @NotNull
