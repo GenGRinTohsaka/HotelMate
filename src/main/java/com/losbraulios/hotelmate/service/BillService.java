@@ -11,6 +11,7 @@ import com.losbraulios.hotelmate.DTO.BillSaveDTO;
 import com.losbraulios.hotelmate.models.Bills;
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.repository.BillRepository;
+import com.losbraulios.hotelmate.service.IService.IBillService;
 
 
 @Service
