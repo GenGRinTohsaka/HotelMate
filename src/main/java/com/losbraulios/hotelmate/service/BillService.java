@@ -36,7 +36,7 @@ public class BillService implements IBillService{
     @Override
     public List<BillResponseDTO> allBills(Long clientId) {
         // Obtiene el cliente a partir de su ID     
-        Clients client = clientService.findByClient(clientId);
+        Clients client = clientService.getClients(clientId);
         // Obtiene todas las facturas asociadas a ese cliente
         List<Bills> bills = billRepository.findByClient(client);
         // convierte una factura a un DTO de respuesta
@@ -72,7 +72,7 @@ public class BillService implements IBillService{
     @Override
     public Bills save(BillSaveDTO billDTO) {
         // Obtiene el cliente por su ID usando el servicio de clientes
-        Clients client = clientService.findClientById(billDTO.getIdCliente());
+        Clients client = clientService.getClients(billDTO.getIdCliente());
         
 
         // Hacce una factura nueva con los datos proporcionados
