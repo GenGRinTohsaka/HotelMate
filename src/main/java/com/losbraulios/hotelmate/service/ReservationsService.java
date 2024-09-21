@@ -10,14 +10,15 @@ import com.losbraulios.hotelmate.DTO.ReservationsSaveDTO;
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Reservations;
 import com.losbraulios.hotelmate.models.Rooms;
-import com.losbraulios.hotelmate.repository.ReservationRepository;
+import com.losbraulios.hotelmate.models.Clients;
+import com.losbraulios.hotelmate.repository.ReservationsRepository;
 import com.losbraulios.hotelmate.service.IService.IReservationsService;
 
 
 @Service
 public class ReservationsService implements IReservationsService{
     @Autowired
-    ReservationRepository reservationRepository;
+    ReservationsRepository reservationRepository;
 
     @Autowired
     RoomService roomService;
