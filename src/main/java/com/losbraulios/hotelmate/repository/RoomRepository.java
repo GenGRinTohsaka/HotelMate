@@ -7,5 +7,6 @@ import com.losbraulios.hotelmate.models.Rooms;
 
 public interface  RoomRepository extends JpaRepository <Rooms, Long>{
     List<Rooms> findByHotel(Hotel hotel);
+    public Rooms findByRooms(Rooms rooms);
 
 }

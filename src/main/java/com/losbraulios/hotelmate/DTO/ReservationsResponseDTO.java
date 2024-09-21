@@ -1,7 +1,6 @@
 package com.losbraulios.hotelmate.DTO;
 
 import java.sql.Timestamp;
-
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Rooms;
 import lombok.AllArgsConstructor;
