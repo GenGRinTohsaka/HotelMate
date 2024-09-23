@@ -1,4 +1,4 @@
-package com.losbraulios.hotelmate.DTO;
+package com.losbraulios.hotelmate.DTO.clear;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

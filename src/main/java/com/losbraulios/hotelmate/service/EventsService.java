@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.losbraulios.hotelmate.DTO.EventsResponseDTO;
-import com.losbraulios.hotelmate.DTO.EventsSaveDTO;
+import com.losbraulios.hotelmate.DTO.response.EventsResponseDTO;
+import com.losbraulios.hotelmate.DTO.save.EventsSaveDTO;
 import com.losbraulios.hotelmate.models.Events;
 import com.losbraulios.hotelmate.models.Services;
 import com.losbraulios.hotelmate.repository.EventsRepository;

@@ -1,4 +1,4 @@
-package com.losbraulios.hotelmate.DTO;
+package com.losbraulios.hotelmate.DTO.save;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

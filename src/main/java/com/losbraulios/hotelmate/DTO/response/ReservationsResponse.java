@@ -1,4 +1,4 @@
-package com.losbraulios.hotelmate.DTO;
+package com.losbraulios.hotelmate.DTO.response;
 
 import java.security.Timestamp;
 
