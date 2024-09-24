@@ -3,6 +3,7 @@ package com.losbraulios.hotelmate.DTO.save;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,6 @@ public class ClientsSaveDTO {
     private String emailClint;
     @NotBlank(message = "El numero telefonico no puede ir vacio")
     private String phoneClient;
+    @NotNull(message = "El usuario no se asigno")
+    private Long userId;
 } 
