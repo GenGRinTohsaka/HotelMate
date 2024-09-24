@@ -9,12 +9,12 @@ import lombok.Data;
 public class UserSaveDTO {
 
     private Long idUser;
-    @NotBlank
+    @NotBlank(message = "El nombre de usuario no puede estar vacio")
     private String nameUser;
     @Email  
-    @NotBlank
+    @NotBlank(message = "El correo no puede esta vacio")
     @Column(unique = true)
     private String emailUser;
-    @NotBlank
+    @NotBlank (message = "La contraseña no puede estar vacia")
     private String passwordUser;
 }

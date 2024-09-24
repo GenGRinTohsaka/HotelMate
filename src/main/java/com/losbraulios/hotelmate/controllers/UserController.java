@@ -12,10 +12,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
+import com.losbraulios.hotelmate.DTO.UserLoginDTO;
 import com.losbraulios.hotelmate.DTO.UserSaveDTO;
 import com.losbraulios.hotelmate.models.Users;
 import com.losbraulios.hotelmate.service.UserService;
@@ -75,6 +77,25 @@ public class UserController {
         } catch (Exception err) {
             res.put("message", "Error al guardar el usuario, intente de nuevo");
             res.put("error", err.getMessage());
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO user) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            System.out.println(user.getPasswordUser());
+            if(userService.login(user.getNameUser(), user.getPasswordUser())){
+                res.put("message", "Usuario logeado satisfactoriamente");
+                return ResponseEntity.ok(res);
+            }else{
+                res.put("message", "Credenciales inválidas");
+                return ResponseEntity.status(401).body(res);
+            }
+        } catch (Exception err) {
+            res.put("message", "Error general al iniciar sesión");
+            res.put("error", err);
             return ResponseEntity.internalServerError().body(res);
         }
     }
