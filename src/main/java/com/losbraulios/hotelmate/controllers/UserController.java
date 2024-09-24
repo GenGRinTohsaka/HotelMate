@@ -9,8 +9,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,6 +97,34 @@ public class UserController {
             }
         } catch (Exception err) {
             res.put("message", "Error general al iniciar sesión");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @DeleteMapping("/delete/{idUser}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long idUser) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            Users user = userService.getUser(idUser);
+            if (user != null) {
+                userService.eliminate(user);
+                res.put("message", "Usuario eliminado con éxito");
+                return ResponseEntity.ok().body(res);
+            } else {
+                res.put("message", "No se encontró el Usuario con ID: " + idUser);
+                return ResponseEntity.status(404).body(res);
+            }
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al eliminar el usuario de la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al eliminar el Usuario");
             res.put("error", err);
             return ResponseEntity.internalServerError().body(res);
         }
