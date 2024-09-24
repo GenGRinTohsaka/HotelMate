@@ -6,5 +6,5 @@ import com.losbraulios.hotelmate.models.Users;
 
 
 public interface  UserRepository extends JpaRepository<Users, Long>{
-    public Users findByUsername(String emailUser);
+    Users findByEmailUser(String emailUser);
 }

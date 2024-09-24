@@ -6,15 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class UserSaveDTO {
-
-    private Long idUser;
+public class UserPasswordUpdateDTO {
     @NotBlank(message = "El nombre de usuario no puede estar vacio")
     private String nameUser;
-    @NotBlank (message = "La contraseña no puede estar vacia")
-    private String passwordUser;
-    @Email  
-    @NotBlank(message = "El correo no puede ir vacio")
+    @NotBlank(message = "El nombre de usuario no puede estar vacio")
+    @Email
     @Column(unique = true)
     private String emailUser;
+    @NotBlank (message = "La contraseña no puede estar vacia")
+    private String passwordUser;
+    @NotBlank (message = "La nueva contraseña no puede estar vacia")
+    private String newPassword;
 }

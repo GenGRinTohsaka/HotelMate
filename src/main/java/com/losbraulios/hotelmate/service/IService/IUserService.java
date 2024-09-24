@@ -14,4 +14,6 @@ public interface  IUserService {
     void eliminate(Users user);
 
     boolean login(String emailUser, String password);
+
+    Users getUserByEmail(String emailUser);
 }

@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 import com.losbraulios.hotelmate.DTO.UserLoginDTO;
+import com.losbraulios.hotelmate.DTO.UserPasswordUpdateDTO;
 import com.losbraulios.hotelmate.DTO.UserSaveDTO;
 import com.losbraulios.hotelmate.models.Users;
 import com.losbraulios.hotelmate.service.UserService;
@@ -125,6 +127,43 @@ public class UserController {
             return ResponseEntity.status(503).body(res);
         } catch (Exception err) {
             res.put("message", "Error general al eliminar el Usuario");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @PutMapping("/passwordUpdate/{idUser}")
+    public ResponseEntity<?> updatePassword(@PathVariable Long idUser,
+                                            @RequestBody UserPasswordUpdateDTO newUser){
+        Map<String, Object> res = new HashMap<>();
+        try{
+            Users oldUsers = new UserService().getUser(idUser);
+            if(oldUsers == null) {
+                res.put("message","No se encontro usuario con el id: "+idUser);
+                return ResponseEntity.status(404).body(res);
+            }
+            if(userService.login(newUser.getEmailUser(),newUser.getPasswordUser())==false){
+                res.put("message", "No se encontro cuenta con las credenciales brindadas");
+                return ResponseEntity.status(404).body(res);
+            }
+
+            if(newUser.getPasswordUser() == oldUsers.getPasswordUser()){
+                res.put("message", "La contraseña es la misma que la actual");
+                return ResponseEntity.badRequest().body(res);
+            }
+            oldUsers.setPasswordUser(newUser.getNewPassword());
+            userService.register(oldUsers);
+            return ResponseEntity.ok().body(oldUsers);
+        }catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al actualizar la contraseña en la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al actualizar la contraseña");
             res.put("error", err);
             return ResponseEntity.internalServerError().body(res);
         }

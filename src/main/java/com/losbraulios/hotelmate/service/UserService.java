@@ -42,8 +42,12 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public Users getUserByEmail(String emailUser){
+        return  userRepository.findByEmailUser(emailUser);
+    }
+    @Override
     public boolean login(String emailUser, String password){
-        Users user = userRepository.findByUsername(emailUser);
+        Users user = getUserByEmail(emailUser);
         if(user == null || !bCryptSecurity.checkPassword(password, user.getPasswordUser())){
             return false;
         }
