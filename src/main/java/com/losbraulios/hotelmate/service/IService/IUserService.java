@@ -12,4 +12,6 @@ public interface  IUserService {
     Users register(Users user);
 
     void eliminate(Users user);
+
+    boolean login(String emailUser, String password);
 }
