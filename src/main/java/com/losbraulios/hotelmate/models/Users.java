@@ -17,24 +17,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Clients {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idClient;
+    private Long idUser;
     @NotBlank
-    private String nit;
-    @NotBlank
-    private String nameClient;
-    @NotBlank
-    private String surnameClient;
-    @Email
+    private String nameUser;
+    @Email  
     @NotBlank
     @Column(unique = true)
-    private String emailClint;
+    private String emailUser;
     @NotBlank
-    private String phoneClient;
+    private String passwordUser;
     @NotNull
     @OneToOne
-    private Users users;
-
+    private Clients clients;
 }
