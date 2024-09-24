@@ -2,14 +2,16 @@ package com.losbraulios.hotelmate.service.IService;
 
 import java.util.List;
 
+import com.losbraulios.hotelmate.DTO.response.ClientsResponseDTO;
+import com.losbraulios.hotelmate.DTO.save.ClientsSaveDTO;
 import com.losbraulios.hotelmate.models.Clients;
 
 public interface IClientsService {
-    List<Clients> listClients();
+    List<ClientsResponseDTO> listClients();
 
-    Clients getClients(Long idClient);
+    Clients findByIdClient(Long idClient);
 
-    Clients register(Clients clients);
+    Clients register(ClientsSaveDTO clientDTO);
 
     void eliminate(Clients clients);
 }

@@ -30,7 +30,7 @@ public class Clients {
     @Email
     @NotBlank
     @Column(unique = true)
-    private String emailClint;
+    private String emailClient;
     @NotBlank
     private String phoneClient;
     @NotNull

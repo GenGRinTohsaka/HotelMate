@@ -14,7 +14,7 @@ public class ClientsResponseDTO {
     private String nit;
     private String nameClient;
     private String surnameClient;
-    private String emailClint;
+    private String emailClient;
     private String phoneClient;
     private Users users;
 }

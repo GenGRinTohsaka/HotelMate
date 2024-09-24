@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ClientsClearDTO {
     private String nameClient;
     private String surnameClient;
-    private String emailClint;
+    private String emailClient;
 }

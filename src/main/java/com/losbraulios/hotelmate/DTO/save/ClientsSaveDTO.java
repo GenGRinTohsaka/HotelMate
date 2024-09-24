@@ -20,7 +20,7 @@ public class ClientsSaveDTO {
     private String surnameClient;
     @Email
     @NotBlank(message = "El email del cliente no puede ir vacío")
-    private String emailClint;
+    private String emailClient;
     @NotBlank(message = "El numero telefonico no puede ir vacio")
     private String phoneClient;
     @NotNull(message = "El usuario no se asigno")
