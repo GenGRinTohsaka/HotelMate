@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.losbraulios.hotelmate.DTO.save.EmployeesSaveDTO;
 import com.losbraulios.hotelmate.models.Employees;
-import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.service.EmployeesService;
 
 import jakarta.validation.Valid;
