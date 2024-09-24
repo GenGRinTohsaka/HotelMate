@@ -11,6 +11,8 @@ import com.losbraulios.hotelmate.DTO.RoomsResponseDTO;
 import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.repository.RoomRepository;
+// modelo de carpeta de Iservice
+import com.losbraulios.hotelmate.service.IService.IRoomService;
 
 @Service
 public class RoomService implements IRoomService{

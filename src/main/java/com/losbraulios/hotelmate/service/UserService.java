@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.losbraulios.hotelmate.models.Users;
 import com.losbraulios.hotelmate.repository.UserRepository;
+// modelo de carpeta de Iservice
+import com.losbraulios.hotelmate.service.IService.IUserService;
 
 @Service
 public class UserService implements IUserService{

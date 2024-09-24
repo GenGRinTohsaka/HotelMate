@@ -1,4 +1,6 @@
-package com.losbraulios.hotelmate.service;
+// carpeta de Iservice
+
+package com.losbraulios.hotelmate.service.IService;
 
 import java.util.List;
 

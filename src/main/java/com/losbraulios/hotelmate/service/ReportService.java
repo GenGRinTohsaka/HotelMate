@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.losbraulios.hotelmate.models.Reports;
 import com.losbraulios.hotelmate.repository.ReportRepository;
+// modelo de carpeta de Iservice
+import com.losbraulios.hotelmate.service.IService.IReportService;
 
 @Service
 public class ReportService implements IReportService {
