@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.repository.HotelRepository;
+import com.losbraulios.hotelmate.service.IService.IHotelService;
 
 @Service
 public class HotelService implements IHotelService{

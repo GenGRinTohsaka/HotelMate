@@ -11,6 +11,7 @@ import com.losbraulios.hotelmate.DTO.save.EventsSaveDTO;
 import com.losbraulios.hotelmate.models.Events;
 import com.losbraulios.hotelmate.models.Services;
 import com.losbraulios.hotelmate.repository.EventsRepository;
+import com.losbraulios.hotelmate.service.IService.IEventsService;
 
 @Service
 public class EventsService implements IEventsService{

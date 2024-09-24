@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.losbraulios.hotelmate.models.Services;
 import com.losbraulios.hotelmate.repository.ServicesRepository;
+import com.losbraulios.hotelmate.service.IService.IServiceService;
 
 @Service
 public class ServiceService implements IServiceService {
