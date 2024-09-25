@@ -1,5 +1,8 @@
 package com.losbraulios.hotelmate.DTO;
+
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +19,10 @@ public class EventsSaveDTO {
     private String eventName;
     @NotBlank(message = "La descripción del evento no puede ir vacío")
     private String eventDescription;
+    @NotBlank(message =  "La hora de inicio no puede ir vacia")
+    private LocalTime startHour;
+    @NotBlank(message = "La hora de finalizacion no puede ir vacia")
+    private LocalTime endHour;
     @NotNull(message = "El día de inicio no pude ir vacio")
     @FutureOrPresent
     private LocalDateTime startDate;

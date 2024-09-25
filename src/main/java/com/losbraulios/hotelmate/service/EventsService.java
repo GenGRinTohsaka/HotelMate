@@ -1,6 +1,5 @@
 package com.losbraulios.hotelmate.service;
 import java.sql.Timestamp;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +42,8 @@ public class EventsService implements IEventsService{
                 eventDTO.getEventId(),
                 eventDTO.getEventName(),
                 eventDTO.getEventDescription(),
+                eventDTO.getStartHour(),
+                eventDTO.getEndHour(),
                 startDate,
                 endDate,
                 services
