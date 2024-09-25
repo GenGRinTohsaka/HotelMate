@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.losbraulios.hotelmate.DTO.ReservationsResponseDTO;
 import com.losbraulios.hotelmate.DTO.ReservationsSaveDTO;
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Reservations;
 import com.losbraulios.hotelmate.models.Rooms;
-import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.repository.ReservationsRepository;
 import com.losbraulios.hotelmate.service.IService.IReservationsService;
 
@@ -18,7 +16,7 @@ import com.losbraulios.hotelmate.service.IService.IReservationsService;
 @Service
 public class ReservationsService implements IReservationsService{
     @Autowired
-    ReservationsRepository reservationRepository;
+    ReservationsRepository reservationsRepository;
 
     @Autowired
     RoomService roomService;
@@ -28,19 +26,13 @@ public class ReservationsService implements IReservationsService{
 
     @Override
     public List<ReservationsResponseDTO> myReservations(){
-       List<Reservations> reservations = reservationRepository.findAll();
-       return reservations.stream().map(reservation -> new ReservationsResponseDTO(
-       reservation.getIdReservation(),
-       reservation.getDescriptionReservation(),
-       reservation.getStarDate(),
-       reservation.getEndDate(),
-       reservation.getRoom(),
-       reservation.getClients())).collect(Collectors.toList());
+       List<Reservations> reservations = reservationsRepository.findAll();
+       return reservations.stream().map(reservation -> reservationsResponseDTO(reservation)).collect(Collectors.toList());
     }
 
     @Override
     public Reservations findByIdReservations(Long idReservation) {
-        return reservationRepository.findById(idReservation).orElse(null);
+        return reservationsRepository.findById(idReservation).orElse(null);
     }
 
     @Override
@@ -48,8 +40,8 @@ public class ReservationsService implements IReservationsService{
         try{
             Timestamp starDate = Timestamp.valueOf(reservationDTO.getStarDate());
             Timestamp endDate = Timestamp.valueOf(reservationDTO.getEndDate());
-            Clients clients = clientsService.findFieldById(reservationDTO.getClientsId());
-            Rooms rooms = roomService.findFieldById(reservationDTO.getRoomId());
+            Clients clients = clientsService.getClients(reservationDTO.getClientsId());
+            Rooms rooms = roomService.gRooms(reservationDTO.getRoomId());
             Reservations reservation = new Reservations(
                 reservationDTO.getIdReservation(),
                 reservationDTO.getDescriptionReservation(),
@@ -58,7 +50,7 @@ public class ReservationsService implements IReservationsService{
                 rooms,
                 clients
             );
-            return reservationRepository.save(reservation);
+            return reservationsRepository.save(reservation);
         }catch(Exception e){
             throw new IllegalArgumentException("Error al parsear las fechas", e);
         }
@@ -66,7 +58,7 @@ public class ReservationsService implements IReservationsService{
 
     @Override
     public void eliminate(Reservations reservations) {
-        reservationRepository.delete(reservations);
+        reservationsRepository.delete(reservations);
     }
 
     private ReservationsResponseDTO reservationsResponseDTO(Reservations reservations){

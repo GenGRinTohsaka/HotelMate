@@ -1,5 +1,6 @@
 package com.losbraulios.hotelmate.service;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,7 @@ public class EventsService implements IEventsService{
     @Override
     public List<EventsResponseDTO> myEvents() {
         List<Events> events = eventsRepository.findAll();
-        return events.stream().map(event -> new EventsResponseDTO(event.getEventId(),
-        event.getEventName(),
-        event.getEventDescription(),
-        event.getStartDate(),
-        event.getEndDate(),
-        event.getServices())).collect(Collectors.toList());
+        return events.stream().map(event -> responseDTO(event)).collect(Collectors.toList());
     }
 
     @Override
@@ -39,20 +35,20 @@ public class EventsService implements IEventsService{
 
     @Override
     public Events save(EventsSaveDTO eventDTO) {
-        try{
+      try{
             Timestamp startDate = Timestamp.valueOf(eventDTO.getStartDate());
-            Timestamp endDate = Timestamp.valueOf(eventDTO.getEndDate());   
-            Services services = servicesService.findFieldById(eventDTO.getServiceId());
+            Timestamp endDate = Timestamp.valueOf(eventDTO.getEndDate());
+            Services services = servicesService.getServices(eventDTO.getServiceId());
             Events event = new Events(
-            eventDTO.getEventId(),
-            eventDTO.getEventName(),
-            eventDTO.getEventDescription(),
-            startDate,
-            endDate,
-            services
+                eventDTO.getEventId(),
+                eventDTO.getEventName(),
+                eventDTO.getEventDescription(),
+                startDate,
+                endDate,
+                services
             );
             return eventsRepository.save(event);
-        } catch(Exception e){
+        }catch(Exception e){
             throw new IllegalArgumentException("Error al parsear las fechas", e);
         }
     }
