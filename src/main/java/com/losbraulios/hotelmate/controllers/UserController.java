@@ -70,10 +70,11 @@ public class UserController {
             return ResponseEntity.badRequest().body(res);
         }try {
             Users users = new Users(
-                user.getIdUser(),
+                null,
                 user.getNameUser(),
-                user.getPasswordUser(),
-                user.getEmailUser()
+                user.getEmailUser(),
+                user.getPasswordUser()
+                
             );
             userService.register(users);
             res.put("message", "Usuario creado correctamente");
@@ -89,8 +90,9 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody UserLoginDTO user) {
         Map<String, Object> res = new HashMap<>();
         try {
-            System.out.println(user.getPasswordUser());
-            if(userService.login(user.getNameUser(), user.getPasswordUser())){
+            
+            System.out.println(user.getPasswordUser()); 
+            if(userService.login(user.getEmailUser(), user.getPasswordUser(),user.getNameUser())==true){
                 res.put("message", "Usuario logeado satisfactoriamente");
                 return ResponseEntity.ok(res);
             }else{
@@ -137,12 +139,12 @@ public class UserController {
                                             @RequestBody UserPasswordUpdateDTO newUser){
         Map<String, Object> res = new HashMap<>();
         try{
-            Users oldUsers = new UserService().getUser(idUser);
+            Users oldUsers = userService.getUser(idUser);
             if(oldUsers == null) {
                 res.put("message","No se encontro usuario con el id: "+idUser);
                 return ResponseEntity.status(404).body(res);
             }
-            if(userService.login(newUser.getEmailUser(),newUser.getPasswordUser())==false){
+            if(userService.login(newUser.getEmailUser(),newUser.getPasswordUser(),null)==false){
                 res.put("message", "No se encontro cuenta con las credenciales brindadas");
                 return ResponseEntity.status(404).body(res);
             }

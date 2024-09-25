@@ -13,7 +13,7 @@ public interface  IUserService {
 
     void eliminate(Users user);
 
-    boolean login(String emailUser, String password);
+    boolean login(String emailUser, String password,String nameUser);
 
     Users getUserByEmail(String emailUser);
 }

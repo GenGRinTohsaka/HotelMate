@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class UserPasswordUpdateDTO {
-    @NotBlank(message = "El nombre de usuario no puede estar vacio")
     private String nameUser;
     @NotBlank(message = "El nombre de usuario no puede estar vacio")
     @Email
