@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientsSaveDTO {
+    private Long idClient;
     @NotBlank(message = "No puede ir vació, espicificar elNIT")
     private String nit;
     @NotBlank(message = "El nombre del cliente no puede ir vacío")
