@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.losbraulios.hotelmate.DTO.clear.UsersClearDTO;
 import com.losbraulios.hotelmate.DTO.response.ClientsResponseDTO;
 import com.losbraulios.hotelmate.DTO.save.ClientsSaveDTO;
 import com.losbraulios.hotelmate.models.Clients;
@@ -59,23 +58,4 @@ public class ClientService implements IClientsService{
         clientRepository.delete(clients);
     }
 
-    private ClientsResponseDTO responseDTO(Clients clients){
-        Users user = clients.getUsers();
-        UsersClearDTO userDTO = new UsersClearDTO(
-            user.getNameUser(), 
-            user.getEmailUser()
-        );
-
-        ClientsResponseDTO dto = new ClientsResponseDTO(
-            clients.getIdClient(), 
-            clients.getNit(), 
-            clients.getNameClient(), 
-            clients.getSurnameClient(), 
-            clients.getEmailClient(), 
-            clients.getPhoneClient(), 
-            userDTO
-        );
-
-        return dto;
-    }
 }

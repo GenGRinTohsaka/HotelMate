@@ -63,17 +63,4 @@ public class EventsService implements IEventsService{
         eventsRepository.delete(events);
     }
 
-    private EventsResponseDTO responseDTO(Events events){
-
-        EventsResponseDTO dto = new EventsResponseDTO(
-            events.getEventId(),
-            events.getEventName(),
-            events.getEventDescription(),
-            events.getStartDate(),
-            events.getEndDate(),
-            events.getServices()
-        );
-
-        return dto;
-    }
 }
