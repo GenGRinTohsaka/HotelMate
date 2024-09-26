@@ -3,7 +3,6 @@ package com.losbraulios.hotelmate.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.losbraulios.hotelmate.DTO.response.ReservationsResponseDTO;
 import com.losbraulios.hotelmate.DTO.save.ReservationsSaveDTO;
-import com.losbraulios.hotelmate.DTO.save.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Reservations;
 import com.losbraulios.hotelmate.models.Rooms;
