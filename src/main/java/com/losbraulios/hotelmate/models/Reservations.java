@@ -1,6 +1,8 @@
 package com.losbraulios.hotelmate.models;
 
-import java.security.Timestamp;
+
+import java.sql.Timestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
