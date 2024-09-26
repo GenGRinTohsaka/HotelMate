@@ -31,6 +31,7 @@ public class ClientService implements IClientsService{
         client.getEmailClient(),
         client.getPhoneClient(),
         client.getUsers())).collect(Collectors.toList());
+
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.losbraulios.hotelmate.DTO.save.ReservationsSaveDTO;
 import com.losbraulios.hotelmate.models.Reservations;
 
 public interface IReservationsService {
-    List<ReservationsResponseDTO> myReservations();
+    List<ReservationsResponseDTO> myReservations(Long idClient);
     
     Reservations findByIdReservations(Long idReservation);
 

@@ -143,7 +143,7 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al eliminar el servicio de la base de datos");
+            res.put("message", "Error al eliminar el evento de la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {

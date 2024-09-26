@@ -29,8 +29,9 @@ public class ReservationsService implements IReservationsService{
     ClientService clientsService;
 
     @Override
-    public List<ReservationsResponseDTO> myReservations(){
-       List<Reservations> reservations = reservationsRepository.findAll();
+    public List<ReservationsResponseDTO> myReservations(Long idClient){
+        Clients clients = clientsService.findByIdClient(idClient);
+       List<Reservations> reservations = reservationsRepository.findByClients(clients);
        return reservations.stream().map(reservation -> reservationsResponseDTO(reservation)).collect(Collectors.toList());
     }
 

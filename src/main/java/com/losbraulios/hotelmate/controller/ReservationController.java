@@ -20,32 +20,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.losbraulios.hotelmate.DTO.save.ClientsSaveDTO;
+import com.losbraulios.hotelmate.DTO.response.ReservationsResponseDTO;
+import com.losbraulios.hotelmate.DTO.save.ReservationsSaveDTO;
 import com.losbraulios.hotelmate.models.Clients;
-import com.losbraulios.hotelmate.models.Users;
+import com.losbraulios.hotelmate.models.Reservations;
+import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.service.ClientService;
-import com.losbraulios.hotelmate.service.UserService;
+import com.losbraulios.hotelmate.service.ReservationsService;
+import com.losbraulios.hotelmate.service.RoomService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("hotelMate/v1/clients")
-public class ClientController {
+@RequestMapping("hotelMate/v1/reservations")
+public class ReservationController {
+    @Autowired
+    ReservationsService reservationsService;
     @Autowired
     ClientService clientService;
-
     @Autowired
-    UserService userService;
+    RoomService roomService;
 
     /*
-     * Este metodo se encarga de devolver todos los clientes registrados
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients
+     * Esta funcion se encarga de devolver las reservaciones realizadas por un cliente
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/reservations/{idClient}
      */
-    @GetMapping()
-    public ResponseEntity<?> getClients(){
+    @GetMapping("/{idClient}")
+    public ResponseEntity<?> getResevationByClient(@PathVariable Long idClient){
         Map<String, Object> res = new HashMap<>();
         try {
-            return ResponseEntity.ok().body(clientService.listClients());
+            List<ReservationsResponseDTO> reservations = reservationsService.myReservations(idClient);
+            if(reservations == null || reservations.isEmpty()){
+                res.put("message", "Aún no tienes reservaciones creadas");
+                return ResponseEntity.status(404).body(res);
+            }else{
+                return ResponseEntity.ok(reservations);
+            }
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar a la base de datos");
             res.put("Error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
@@ -62,12 +72,12 @@ public class ClientController {
     }
 
     /*
-     * Esta funcion se encarga de registrar a los clientes
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/save
+     * Esta funcion se encarga de registrar las reservaciones 
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/reservations/save
      */
     @PostMapping("/save")
-    public ResponseEntity<?> registerCLient(
-        @Valid @ModelAttribute ClientsSaveDTO clientDTO,
+    public ResponseEntity<?> saveReservation(
+        @Valid @ModelAttribute ReservationsSaveDTO reservationDTO,
         BindingResult result
     ){
         Map<String, Object> res = new HashMap<>();
@@ -80,30 +90,30 @@ public class ClientController {
                 return ResponseEntity.badRequest().body(res);
         }   
         try {
-            Clients clients = clientService.register(clientDTO);
-            res.put("message", "Cliente guardado exitosamente");
-            res.put("Client", clients);
+            Reservations reservations = reservationsService.save(reservationDTO);
+            res.put("message", "Reservación realizada con exito");
+            res.put("Reservations", reservations);
             return ResponseEntity.ok(res);
         } catch (Exception e) {
-            res.put("message", "Error al registrar al cliente, intente de nuevo más tarde");
+            res.put("message", "Error al registrar la reservacion, intente de nuevo más tarde");
             res.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
     /*
-     * Esta funcion se encarga de devolver un cliente por su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/search/{idClient}
+     * Esta funcion se encarga de devolver una Reservacion por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/reservations/search/{idReservation}
      */
-    @GetMapping("/search/{idClient}")
-    public ResponseEntity<?> myClientById(@PathVariable Long idClient){
+    @GetMapping("/search/{idReservation}")
+    public ResponseEntity<?> myReservationById(@PathVariable Long idReservation){
         Map<String, Object> res = new HashMap<>();
         try {
-            Clients clients = clientService.findByIdClient(idClient);
-            if (clients != null) {
-                return ResponseEntity.ok().body(clients);
+            Reservations reservations = reservationsService.findByIdReservations(idReservation);
+            if (reservations != null) {
+                return ResponseEntity.ok().body(reservations);
             } else {
-                res.put("message", "Cliente no encontrado");
+                res.put("message", "Reservacion no encontrada");
                 return ResponseEntity.status(404).body(res);
             }
         } catch (CannotCreateTransactionException e) {
@@ -115,27 +125,27 @@ public class ClientController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al obtener el Cliente buscado");
+            res.put("message", "Error general al obtener la reservacion");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
     /*
-     * Esta funcion se encarga de eliminar un cliente por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/delete/{idClient}
+     * Esta funcion se encarga de eliminar una Reservacion por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/reservations/delete/{idReservation}
      */
-    @DeleteMapping("/delete/{idClient}")
-    public ResponseEntity<?> deleteClient(@PathVariable Long idClient){
+    @DeleteMapping("/delete/{idReservation}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long idReservation){
         Map<String, Object> res = new HashMap<>();
         try {
-            Clients clients = clientService.findByIdClient(idClient);
-            if (clients != null) {
-                clientService.eliminate(clients);
-                res.put("message", "Cliente eliminado con exito");
+            Reservations reservations = reservationsService.findByIdReservations(idReservation);
+            if (reservations != null) {
+                reservationsService.eliminate(reservations);
+                res.put("message", "Reservación eliminado con exito");
                 return ResponseEntity.ok().body(res);
             }else{
-                res.put("message", "No se enconto un Cliente con el ID"+ idClient);
+                res.put("message", "No se enconto una reservacion con el ID"+ idReservation);
                 return ResponseEntity.status(404).body(res);
             }
         } catch (CannotCreateTransactionException e) {
@@ -143,60 +153,55 @@ public class ClientController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al eliminar al Cliente de la base de datos");
+            res.put("message", "Error al eliminar la reservacion de la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al eliminar al Cliente");
+            res.put("message", "Error general al cancelar la reservacion");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
-
     /*
-     * Esta funcion se encarga de actualizar un Cliente el cual se busca por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/update/{idClient}
+     * Esta funcion se encarga de actualizar una Reservacion el cual se busca por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/reservations/update/{idReservation}
      */
-    @PutMapping("/update/{idClient}")
-    public ResponseEntity<?> updateClient(@PathVariable Long idClient, @RequestBody ClientsSaveDTO newClient){
+    @PutMapping("/update/{idReservation}")
+    public ResponseEntity<?> updateMyReservation(@PathVariable Long idReservation, @RequestBody ReservationsSaveDTO newReservation){
         Map<String, Object> res = new HashMap<>();
         try {
-            Clients oldClient = clientService.findByIdClient(idClient);
-            Users users = userService.getUser(oldClient.getUsers().getIdUser());
-            if (oldClient == null) {
-                res.put("message","No se encontro un Cliente con el ID " + idClient);
+            Reservations oldReservation = reservationsService.findByIdReservations(idReservation);
+            Clients client = clientService.findByIdClient(oldReservation.getClients().getIdClient());
+            Rooms room = roomService.findByIdRoom(oldReservation.getRoom().getRoomId());
+            if (oldReservation == null) {
+                res.put("message","No se encontro una Reservacion con el ID " + idReservation);
                 return ResponseEntity.status(404).body(res);
+            }if (newReservation.getDescriptionReservation() == null) {
+                newReservation.setDescriptionReservation(oldReservation.getDescriptionReservation());
+            }if (newReservation.getStarDate() == null) {
+                newReservation.setStarDate(oldReservation.getStarDate().toLocalDateTime());
+            }if (newReservation.getEndDate() == null) {
+                newReservation.setEndDate(oldReservation.getEndDate().toLocalDateTime());
+            }if (newReservation.getRoomId() == null) {
+                newReservation.setRoomId(room.getRoomId());
+            } if(newReservation.getClientsId() == null){
+                newReservation.setClientsId(client.getIdClient());
+            } if(newReservation.getIdReservation() == null){
+                newReservation.setIdReservation(idReservation);
             }
-            if (newClient.getNameClient() == null) {
-                newClient.setNameClient(oldClient.getNameClient());
-            }
-            if (newClient.getSurnameClient() == null) {
-                newClient.setSurnameClient(oldClient.getSurnameClient());
-            }
-            if (newClient.getNit() == null) {
-                newClient.setNit(oldClient.getNit());
-            } if(newClient.getEmailClient() == null){
-                newClient.setEmailClient(oldClient.getEmailClient());
-            } if(newClient.getPhoneClient() == null){
-                newClient.setPhoneClient(oldClient.getPhoneClient());
-            }if(newClient.getUserId() == null) {
-                newClient.setUserId(users.getIdUser());
-            }if(newClient.getIdClient() == null){
-                newClient.setUserId(idClient);
-            }
-            clientService.register(newClient);
-            return ResponseEntity.ok().body(newClient);
+            reservationsService.save(newReservation);
+            return ResponseEntity.ok().body(newReservation);
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar con la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al actualizar los datos del Cliente en la base de datos");
+            res.put("message", "Error al actualizar la reservacion en la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al actualizar los datos del Cliente");
+            res.put("message", "Error general al actualizar la reservacion");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
