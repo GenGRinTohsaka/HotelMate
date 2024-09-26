@@ -22,5 +22,4 @@ public class RoomsAssignmentDTO {
     //Ahora con esto podemos trabajar el guardado con relación
     @NotNull(message = "No se selecciono hotel para asignar")
     private Long idHotel;
-    private Long reservationCount = 0L;
 }

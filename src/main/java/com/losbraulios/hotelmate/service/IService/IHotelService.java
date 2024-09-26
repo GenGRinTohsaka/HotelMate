@@ -6,6 +6,8 @@ import com.losbraulios.hotelmate.models.Hotel;
 public interface IHotelService {
     List<Hotel> listHotel();
 
+    Hotel getHotelByName(String hotelName);
+
     Hotel getHotel(Long idHotel);
 
     Hotel register(Hotel hotel);

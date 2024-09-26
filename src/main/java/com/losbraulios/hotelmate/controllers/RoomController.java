@@ -192,4 +192,35 @@ public class RoomController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
+
+    /*
+     * Esta función nos devuelve una habitacion especifico en base al id
+     * El link de la función es: http://localhost:8081/hotelMate/v1/rooms/search/{hotelId}
+     */
+    @GetMapping("/searchByName/{nameHotel}")
+    public ResponseEntity<?> searchRoomByName(@PathVariable String nameHotel) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            List<RoomsResponseDTO> rooms = roomService.getRoomsByHotelName(nameHotel);
+            if(rooms == null){
+                res.put("message", "No existen habitaciones asignadas al hotel");
+                return ResponseEntity.status(404).body(res);
+            }else{
+                return ResponseEntity.ok(rooms);
+            }
+
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al conectar con la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al consultar la base de datos");
+            res.put("error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener las habitaciones");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
 }

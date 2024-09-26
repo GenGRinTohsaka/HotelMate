@@ -43,7 +43,7 @@ public class ClientService implements IClientsService{
     public Clients register(ClientsSaveDTO clientDTO) {
         Users user = userService.getUser(clientDTO.getUserId());
         Clients clients = new Clients(
-            null,
+            clientDTO.getIdClient(),
             clientDTO.getNit(),
             clientDTO.getNameClient(),
             clientDTO.getSurnameClient(),

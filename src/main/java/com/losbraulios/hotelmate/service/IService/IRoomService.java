@@ -19,4 +19,7 @@ public interface IRoomService {
   //Metodo para eliminar habitacion
   void eliminate(Rooms room);
 
+  List<RoomsResponseDTO> getRoomsByHotelName(String nameHotel);
+
+
 }   

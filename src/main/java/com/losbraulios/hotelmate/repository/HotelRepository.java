@@ -4,4 +4,5 @@ import com.losbraulios.hotelmate.models.Hotel;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long>{
 
+    Hotel findByNameHotel(String nameHotel);
 }

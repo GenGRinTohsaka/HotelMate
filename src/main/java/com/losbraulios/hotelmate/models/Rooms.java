@@ -32,11 +32,5 @@ public class Rooms {
     @NotNull
     @ManyToOne
     private Hotel hotel;
-    @NotNull
-    private Long reservationCount = 0L;
-
-    public void incrementReservationCount() {
-        this.reservationCount++;
-    }
 
 }

@@ -14,7 +14,6 @@ import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Reservations;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.repository.ReservationsRepository;
-import com.losbraulios.hotelmate.repository.RoomRepository;
 import com.losbraulios.hotelmate.service.IService.IReservationsService;
 
 
@@ -25,9 +24,6 @@ public class ReservationsService implements IReservationsService{
     
     @Autowired
     RoomService roomService;
-
-    @Autowired
-    RoomRepository roomRepository;
 
     @Autowired
     ClientService clientsService;
@@ -60,16 +56,9 @@ public class ReservationsService implements IReservationsService{
             clients
             );
 
-            if (room != null) {
-                // Incrementar el contador de reservas
-                room.incrementReservationCount();
-                
-                // Guardar el nuevo estado de la habitación
-                roomRepository.save(room);
-            }
-
             return reservationsRepository.save(reservation);
         }catch(Exception e){
+            e.printStackTrace();
             throw new IllegalArgumentException("Error al parsear las fechas", e);
         }
     }

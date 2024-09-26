@@ -30,4 +30,9 @@ public class HotelService implements IHotelService{
     public void eliminate(Hotel hotel) {
         hotelRepository.delete(hotel);
     }
+
+    @Override
+    public Hotel getHotelByName(String hotelName) {
+       return hotelRepository.findByNameHotel(hotelName);
+    }
 }

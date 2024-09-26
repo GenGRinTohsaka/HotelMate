@@ -63,8 +63,7 @@ public class RoomService implements IRoomService{
                 roomDTO.getDayPrice(),
                 roomDTO.getRoomType(),
                 roomDTO.getRoomCapacity(),
-                hotel,// Relaciona la habitación con el hotel
-                null 
+                hotel
             );
     
             // Guarda la habitación en la base de datos y retorna la entidad guardada
@@ -76,5 +75,20 @@ public class RoomService implements IRoomService{
     @Override
     public void eliminate(Rooms room) {
         roomRepository.delete(room);
+    }
+
+    @Override
+    public List<RoomsResponseDTO> getRoomsByHotelName(String nameHotel) {
+        Hotel hotel = hotelService.getHotelByName(nameHotel);
+        List<Rooms> rooms = roomRepository.findByHotel(hotel);
+        return rooms.stream()
+            .map(room ->  new RoomsResponseDTO( room.getRoomId(),
+            room.getRoomNumber(),
+            room.getNightPrice(),
+            room.getDayPrice(),
+            room.getRoomType(),
+            room.getRoomCapacity(),
+            room.getHotel()))
+            .collect(Collectors.toList());
     }
 }
