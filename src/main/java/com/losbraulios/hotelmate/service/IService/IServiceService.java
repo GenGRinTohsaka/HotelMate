@@ -1,4 +1,4 @@
-package com.losbraulios.hotelmate.service;
+package com.losbraulios.hotelmate.service.IService;
 import java.util.List;
 
 import com.losbraulios.hotelmate.models.Services;

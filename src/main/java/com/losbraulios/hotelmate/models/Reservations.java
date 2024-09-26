@@ -1,10 +1,15 @@
 package com.losbraulios.hotelmate.models;
 
+
+import java.sql.Timestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,28 +20,22 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rooms {
+public class Reservations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
-    @NotNull
-    private Long roomNumber;
-    @NotNull
-    private Double nightPrice;
-    @NotNull
-    private Double dayPrice;
+    private Long idReservation;
     @NotBlank
-    private String roomType;
-    @NotBlank
-    private String roomCapacity;
+    private String descriptionReservation;
     @NotNull
-    @ManyToOne
-    private Hotel hotel;
+    @FutureOrPresent
+    private Timestamp starDate;
     @NotNull
-    private Long reservationCount = 0L;
-
-    public void incrementReservationCount() {
-        this.reservationCount++;
-    }
-
+    @FutureOrPresent
+    private Timestamp endDate;
+    @NotNull
+    @ManyToMany
+    private Rooms room;
+    @NotNull
+    @OneToMany
+    private Clients clients;
 }

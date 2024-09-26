@@ -6,11 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
-import com.losbraulios.hotelmate.DTO.RoomsResponseDTO;
+import com.losbraulios.hotelmate.DTO.response.RoomsResponseDTO;
+import com.losbraulios.hotelmate.DTO.save.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.repository.RoomRepository;
+import com.losbraulios.hotelmate.service.IService.IRoomService;
 
 @Service
 public class RoomService implements IRoomService{
@@ -62,7 +63,8 @@ public class RoomService implements IRoomService{
                 roomDTO.getDayPrice(),
                 roomDTO.getRoomType(),
                 roomDTO.getRoomCapacity(),
-                hotel // Relaciona la habitación con el hotel
+                hotel,// Relaciona la habitación con el hotel
+                null 
             );
     
             // Guarda la habitación en la base de datos y retorna la entidad guardada

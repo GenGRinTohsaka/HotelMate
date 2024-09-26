@@ -1,4 +1,4 @@
-package com.losbraulios.hotelmate.DTO;
+package com.losbraulios.hotelmate.DTO.save;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,4 +22,5 @@ public class RoomsAssignmentDTO {
     //Ahora con esto podemos trabajar el guardado con relación
     @NotNull(message = "No se selecciono hotel para asignar")
     private Long idHotel;
+    private Long reservationCount = 0L;
 }

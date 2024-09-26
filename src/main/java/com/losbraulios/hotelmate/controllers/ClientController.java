@@ -20,32 +20,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.losbraulios.hotelmate.DTO.save.EventsSaveDTO;
-import com.losbraulios.hotelmate.models.Events;
-import com.losbraulios.hotelmate.models.Services;
-import com.losbraulios.hotelmate.service.EventsService;
-import com.losbraulios.hotelmate.service.ServiceService;
+import com.losbraulios.hotelmate.DTO.save.ClientsSaveDTO;
+import com.losbraulios.hotelmate.models.Clients;
+import com.losbraulios.hotelmate.models.Users;
+import com.losbraulios.hotelmate.service.ClientService;
+import com.losbraulios.hotelmate.service.UserService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("hotelMate/v1/events")
-public class EventsController {
+@RequestMapping("hotelMate/v1/clients")
+public class ClientController {
     @Autowired
-    EventsService eventsService;
+    ClientService clientService;
 
     @Autowired
-    ServiceService serviceService;
+    UserService userService;
 
     /*
-     * Esta funcion se encarga de devolver todos los eventos creados
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events
+     * Este metodo se encarga de devolver todos los clientes registrados
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients
      */
     @GetMapping()
-    public ResponseEntity<?> getEvents(){
+    public ResponseEntity<?> getClients(){
         Map<String, Object> res = new HashMap<>();
         try {
-            return ResponseEntity.ok().body(eventsService.myEvents());
+            return ResponseEntity.ok().body(clientService.listClients());
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar a la base de datos");
             res.put("Error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
@@ -62,12 +62,12 @@ public class EventsController {
     }
 
     /*
-     * Esta funcion se encarga de registrar los eventos
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/save
+     * Esta funcion se encarga de registrar a los clientes
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/save
      */
     @PostMapping("/save")
-    public ResponseEntity<?> saveEvent(
-        @Valid @ModelAttribute EventsSaveDTO eventDTO,
+    public ResponseEntity<?> registerCLient(
+        @Valid @ModelAttribute ClientsSaveDTO clientDTO,
         BindingResult result
     ){
         Map<String, Object> res = new HashMap<>();
@@ -80,30 +80,30 @@ public class EventsController {
                 return ResponseEntity.badRequest().body(res);
         }   
         try {
-            Events events = eventsService.save(eventDTO);
-            res.put("message", "Evento guardado exitosamente");
-            res.put("Evento", events);
+            Clients clients = clientService.register(clientDTO);
+            res.put("message", "Cliente guardado exitosamente");
+            res.put("Client", clients);
             return ResponseEntity.ok(res);
         } catch (Exception e) {
-            res.put("message", "Error al registrar el evento, intente de nuevo más tarde");
+            res.put("message", "Error al registrar al cliente, intente de nuevo más tarde");
             res.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
     /*
-     * Esta funcion se encarga de devolver un evento por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/search/{eventId}
+     * Esta funcion se encarga de devolver un cliente por su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/search/{idClient}
      */
-    @GetMapping("/search/{eventId}")
-    public ResponseEntity<?> myEventById(@PathVariable Long eventId){
+    @GetMapping("/search/{idClient}")
+    public ResponseEntity<?> myClientById(@PathVariable Long idClient){
         Map<String, Object> res = new HashMap<>();
         try {
-            Events events = eventsService.findByIdEvents(eventId);
-            if (events != null) {
-                return ResponseEntity.ok().body(events);
+            Clients clients = clientService.findByIdClient(idClient);
+            if (clients != null) {
+                return ResponseEntity.ok().body(clients);
             } else {
-                res.put("message", "Evento no encontrado");
+                res.put("message", "Cliente no encontrado");
                 return ResponseEntity.status(404).body(res);
             }
         } catch (CannotCreateTransactionException e) {
@@ -115,27 +115,27 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al obtener el evento buscado");
+            res.put("message", "Error general al obtener el Cliente buscado");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
     /*
-     * Esta funcion se encarga de eliminar un evento por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/delete/{eventId}
+     * Esta funcion se encarga de eliminar un cliente por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/delete/{idClient}
      */
-    @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
+    @DeleteMapping("/delete/{idClient}")
+    public ResponseEntity<?> deleteClient(@PathVariable Long idClient){
         Map<String, Object> res = new HashMap<>();
         try {
-            Events events = eventsService.findByIdEvents(eventId);
-            if (events != null) {
-                eventsService.eliminate(events);
-                res.put("message", "Evento cancelado con exito");
+            Clients clients = clientService.findByIdClient(idClient);
+            if (clients != null) {
+                clientService.eliminate(clients);
+                res.put("message", "Cliente eliminado con exito");
                 return ResponseEntity.ok().body(res);
             }else{
-                res.put("message", "No se enconto un evento con el ID"+ eventId);
+                res.put("message", "No se enconto un Cliente con el ID"+ idClient);
                 return ResponseEntity.status(404).body(res);
             }
         } catch (CannotCreateTransactionException e) {
@@ -143,58 +143,60 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al eliminar el evento de la base de datos");
+            res.put("message", "Error al eliminar al Cliente de la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al cancelar el evento");
+            res.put("message", "Error general al eliminar al Cliente");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
-    
+
     /*
-     * Esta funcion se encarga de actualizar un evento el cual se busca por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/update/{eventId}
+     * Esta funcion se encarga de actualizar un Cliente el cual se busca por medio de su ID
+     * El link de esta función es: http://localhost:8081/hotelMate/v1/clients/update/{idClient}
      */
-    @PutMapping("/update/{eventId}")
-    public ResponseEntity<?> updateMyEvent(@PathVariable Long eventId, @RequestBody EventsSaveDTO newEvents){
+    @PutMapping("/update/{idClient}")
+    public ResponseEntity<?> updateClient(@PathVariable Long idClient, @RequestBody ClientsSaveDTO newClient){
         Map<String, Object> res = new HashMap<>();
         try {
-            Events oldEvents = eventsService.findByIdEvents(eventId);
-            Services services = serviceService.findFieldById(oldEvents.getServices().getServiceId());
-            if (oldEvents == null) {
-                res.put("message","No se encontro un evento con el ID " + eventId);
+            Clients oldClient = clientService.findByIdClient(idClient);
+            Users users = userService.getUser(oldClient.getUsers().getIdUser());
+            if (oldClient == null) {
+                res.put("message","No se encontro un Cliente con el ID " + idClient);
                 return ResponseEntity.status(404).body(res);
             }
-            if (newEvents.getEventName() == null) {
-                newEvents.setEventName(oldEvents.getEventName());
+            if (newClient.getNameClient() == null) {
+                newClient.setNameClient(oldClient.getNameClient());
             }
-            if (newEvents.getEventDescription() == null) {
-                newEvents.setEventDescription(oldEvents.getEventDescription());
+            if (newClient.getSurnameClient() == null) {
+                newClient.setSurnameClient(oldClient.getSurnameClient());
             }
-            if (newEvents.getServiceId() == null) {
-                newEvents.setServiceId(services.getServiceId());
-            } if(newEvents.getEndDate() == null){
-                newEvents.setEndDate(oldEvents.getEndDate().toLocalDateTime());
-            } if(newEvents.getStartDate() == null){
-                newEvents.setStartDate(oldEvents.getStartDate().toLocalDateTime());
-            } if(newEvents.getEventId() == null){
-                newEvents.setEventId(eventId);
+            if (newClient.getNit() == null) {
+                newClient.setNit(oldClient.getNit());
+            } if(newClient.getEmailClient() == null){
+                newClient.setEmailClient(oldClient.getEmailClient());
+            } if(newClient.getPhoneClient() == null){
+                newClient.setPhoneClient(oldClient.getPhoneClient());
+            }if(newClient.getUserId() == null) {
+                newClient.setUserId(users.getIdUser());
+            }if(newClient.getIdClient() == null){
+                newClient.setUserId(idClient);
             }
-            eventsService.save(newEvents);
-            return ResponseEntity.ok().body(newEvents);
+            clientService.register(newClient);
+            return ResponseEntity.ok().body(newClient);
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar con la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al actualizar el evento en la base de datos");
+            res.put("message", "Error al actualizar los datos del Cliente en la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al actualizar el evento");
+            res.put("message", "Error general al actualizar los datos del Cliente");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }

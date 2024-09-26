@@ -20,54 +20,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.losbraulios.hotelmate.DTO.save.EventsSaveDTO;
-import com.losbraulios.hotelmate.models.Events;
-import com.losbraulios.hotelmate.models.Services;
-import com.losbraulios.hotelmate.service.EventsService;
-import com.losbraulios.hotelmate.service.ServiceService;
+import com.losbraulios.hotelmate.DTO.save.EmployeesSaveDTO;
+import com.losbraulios.hotelmate.models.Employees;
+import com.losbraulios.hotelmate.service.EmployeesService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("hotelMate/v1/events")
-public class EventsController {
-    @Autowired
-    EventsService eventsService;
+@RequestMapping("hotelMate/v1/employees")
+public class EmployeesController {
 
     @Autowired
-    ServiceService serviceService;
+    EmployeesService employeesService;
 
     /*
-     * Esta funcion se encarga de devolver todos los eventos creados
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events
+     * Método listar empleados
+     * http://localhost:8081/hotelMate/v1/employees
      */
     @GetMapping()
-    public ResponseEntity<?> getEvents(){
+    public ResponseEntity<?> getEmployees(){
         Map<String, Object> res = new HashMap<>();
         try {
-            return ResponseEntity.ok().body(eventsService.myEvents());
-        } catch (CannotCreateTransactionException e) {
-            res.put("message", "Error al conectar a la base de datos");
+            return ResponseEntity.ok().body(employeesService.listEmployees());
+        }catch (CannotCreateTransactionException e){
+            res.put("message", "Error al conectar con la base de datos");
             res.put("Error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
-        } catch (DataAccessException e) {
+        }catch(DataAccessException e){
             res.put("message", "Error al consultar con la base de datos");
             res.put("Error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
             res.put("message", "Error general al obtener los datos");
-            res.put("Error", e.getMessage());
+            res.put("Error", e);
             return ResponseEntity.internalServerError().body(res);
-        }
+        } 
     }
 
     /*
-     * Esta funcion se encarga de registrar los eventos
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/save
+     * Función que permite agregar a empleados
+     * http://localhost:8081/hotelMate/v1/employees/register
      */
-    @PostMapping("/save")
-    public ResponseEntity<?> saveEvent(
-        @Valid @ModelAttribute EventsSaveDTO eventDTO,
+    @PostMapping("/register")
+    public ResponseEntity<?> registerEmployee(
+        @Valid @ModelAttribute EmployeesSaveDTO employeeDTO,
         BindingResult result
     ){
         Map<String, Object> res = new HashMap<>();
@@ -76,34 +72,43 @@ public class EventsController {
                 .stream()
                 .map(error -> error.getDefaultMessage())
                 .collect(Collectors.toList());
+                res.put("message", "Error con las validaciones, Ingresa todos los campos");
                 res.put("Errors", errors);
                 return ResponseEntity.badRequest().body(res);
-        }   
-        try {
-            Events events = eventsService.save(eventDTO);
-            res.put("message", "Evento guardado exitosamente");
-            res.put("Evento", events);
+        }
+        try {           
+            Long idEmployee = null;
+            Employees newEmployees = new Employees(
+                idEmployee,
+                employeeDTO.getNameEmployee(),
+                employeeDTO.getSurnameEmployee(),
+                employeeDTO.getPhoneEmployee(),
+                employeeDTO.getEmailEmployee(),
+                employeeDTO.getRoleEmployee()
+            );
+            employeesService.register(newEmployees);
+            res.put("message","Empleado agregado correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception e) {
-            res.put("message", "Error al registrar el evento, intente de nuevo más tarde");
-            res.put("error", e.getMessage());
+            res.put("message", "Error al agregar Empleado, intente de nuevo mas tarde");
+            res.put("Error", e.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
     /*
-     * Esta funcion se encarga de devolver un evento por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/search/{eventId}
+     * Función que nos permite buscar empleado por su ID
+     * http://localhost:8081/hotelMate/v1/employees/search/{idEmployee}
      */
-    @GetMapping("/search/{eventId}")
-    public ResponseEntity<?> myEventById(@PathVariable Long eventId){
+    @GetMapping("/search/{idEmployee}")
+    public ResponseEntity<?> searchEmployee(@PathVariable Long idEmployee) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Events events = eventsService.findByIdEvents(eventId);
-            if (events != null) {
-                return ResponseEntity.ok().body(events);
+                Employees employees = employeesService.getEmployees(idEmployee);
+            if (employees != null) {
+                return ResponseEntity.ok().body(employees);
             } else {
-                res.put("message", "Evento no encontrado");
+                res.put("message", "Empleado no encontrado");
                 return ResponseEntity.status(404).body(res);
             }
         } catch (CannotCreateTransactionException e) {
@@ -115,27 +120,27 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al obtener el evento buscado");
+            res.put("message", "Error general al obtener el Empleado");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
     /*
-     * Esta funcion se encarga de eliminar un evento por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/delete/{eventId}
+     * Función que permite eliminar un Empleado por medio de su ID
+     * http://localhost:8081/hotelMate/v1/employees/delete/{idEmployee}
      */
-    @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
+    @DeleteMapping("/delete/{idEmployee}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long idEmployee) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Events events = eventsService.findByIdEvents(eventId);
-            if (events != null) {
-                eventsService.eliminate(events);
-                res.put("message", "Evento cancelado con exito");
+            Employees employees = employeesService.getEmployees(idEmployee);
+            if (employees != null) {
+                employeesService.eliminate(employees);
+                res.put("message", "Empleado eliminado con éxito");
                 return ResponseEntity.ok().body(res);
-            }else{
-                res.put("message", "No se enconto un evento con el ID"+ eventId);
+            } else {
+                res.put("message", "No se encontró un Empleado con ID: " + idEmployee);
                 return ResponseEntity.status(404).body(res);
             }
         } catch (CannotCreateTransactionException e) {
@@ -143,61 +148,62 @@ public class EventsController {
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al eliminar el evento de la base de datos");
+            res.put("message", "Error al eliminar al Empleado de la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al cancelar el evento");
+            res.put("message", "Error general al eliminar al Empleado");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
-    
     /*
-     * Esta funcion se encarga de actualizar un evento el cual se busca por medio de su ID
-     * El link de esta función es: http://localhost:8081/hotelMate/v1/events/update/{eventId}
+     * Función para actualizar datos de un Empleado por medio de su ID
+     * http://localhost:8081/hotelMate/v1/employees/update/{idEmployee}
      */
-    @PutMapping("/update/{eventId}")
-    public ResponseEntity<?> updateMyEvent(@PathVariable Long eventId, @RequestBody EventsSaveDTO newEvents){
+    @PutMapping("/update/{idEmployee}")
+    public ResponseEntity<?> updateEmployee(@PathVariable Long idEmployee, @RequestBody Employees newWEmployee) {
         Map<String, Object> res = new HashMap<>();
         try {
-            Events oldEvents = eventsService.findByIdEvents(eventId);
-            Services services = serviceService.findFieldById(oldEvents.getServices().getServiceId());
-            if (oldEvents == null) {
-                res.put("message","No se encontro un evento con el ID " + eventId);
+            Employees oldEmployee = employeesService.getEmployees(idEmployee);
+            if (oldEmployee == null) {
+                res.put("message", "No se encontró al Empleado con ID: " + idEmployee);
                 return ResponseEntity.status(404).body(res);
+            }            
+            //Todas estas validaciones son para que los datos anteriores tomen lugar de los valores null en el RequestBody
+            if (newWEmployee.getNameEmployee() != null) {
+                oldEmployee.setNameEmployee(newWEmployee.getNameEmployee());
             }
-            if (newEvents.getEventName() == null) {
-                newEvents.setEventName(oldEvents.getEventName());
+            if (newWEmployee.getSurnameEmployee() != null) {
+                oldEmployee.setSurnameEmployee(newWEmployee.getSurnameEmployee());
             }
-            if (newEvents.getEventDescription() == null) {
-                newEvents.setEventDescription(oldEvents.getEventDescription());
+            if (newWEmployee.getPhoneEmployee() != null) {
+                oldEmployee.setPhoneEmployee(newWEmployee.getPhoneEmployee());
             }
-            if (newEvents.getServiceId() == null) {
-                newEvents.setServiceId(services.getServiceId());
-            } if(newEvents.getEndDate() == null){
-                newEvents.setEndDate(oldEvents.getEndDate().toLocalDateTime());
-            } if(newEvents.getStartDate() == null){
-                newEvents.setStartDate(oldEvents.getStartDate().toLocalDateTime());
-            } if(newEvents.getEventId() == null){
-                newEvents.setEventId(eventId);
+            if (newWEmployee.getEmailEmployee() != null) {
+                oldEmployee.setEmailEmployee(newWEmployee.getEmailEmployee());
             }
-            eventsService.save(newEvents);
-            return ResponseEntity.ok().body(newEvents);
+            if (newWEmployee.getRoleEmployee() != null) {
+                oldEmployee.setRoleEmployee(newWEmployee.getRoleEmployee());
+            }
+
+            employeesService.register(oldEmployee);
+            return ResponseEntity.ok().body(oldEmployee);
+
         } catch (CannotCreateTransactionException e) {
             res.put("message", "Error al conectar con la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException e) {
-            res.put("message", "Error al actualizar el evento en la base de datos");
+            res.put("message", "Error al actualizar datos del Empleado en la base de datos");
             res.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al actualizar el evento");
+            res.put("message", "Error general al actualizar datos del Empleado");
             res.put("error", e);
             return ResponseEntity.internalServerError().body(res);
         }
-
     }
+
 }

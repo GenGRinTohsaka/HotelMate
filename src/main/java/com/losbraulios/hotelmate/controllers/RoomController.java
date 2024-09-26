@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.losbraulios.hotelmate.DTO.RoomsAssignmentDTO;
-import com.losbraulios.hotelmate.DTO.RoomsResponseDTO;
+import com.losbraulios.hotelmate.DTO.response.RoomsResponseDTO;
+import com.losbraulios.hotelmate.DTO.save.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Hotel;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.service.HotelService;

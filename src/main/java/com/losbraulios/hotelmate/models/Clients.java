@@ -1,10 +1,12 @@
 package com.losbraulios.hotelmate.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,28 +17,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rooms {
+public class Clients {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
-    @NotNull
-    private Long roomNumber;
-    @NotNull
-    private Double nightPrice;
-    @NotNull
-    private Double dayPrice;
+    private Long idClient;
     @NotBlank
-    private String roomType;
+    private String nit;
     @NotBlank
-    private String roomCapacity;
+    private String nameClient;
+    @NotBlank
+    private String surnameClient;
+    @Email
+    @NotBlank
+    @Column(unique = true)
+    private String emailClient;
+    @NotBlank
+    private String phoneClient;
     @NotNull
-    @ManyToOne
-    private Hotel hotel;
-    @NotNull
-    private Long reservationCount = 0L;
-
-    public void incrementReservationCount() {
-        this.reservationCount++;
-    }
+    @OneToOne
+    private Users users;
 
 }
