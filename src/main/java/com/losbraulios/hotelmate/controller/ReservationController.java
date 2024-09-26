@@ -3,6 +3,7 @@ package com.losbraulios.hotelmate.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.losbraulios.hotelmate.DTO.response.ReservationsResponseDTO;
 import com.losbraulios.hotelmate.DTO.save.ReservationsSaveDTO;
+import com.losbraulios.hotelmate.DTO.save.RoomsAssignmentDTO;
 import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Reservations;
 import com.losbraulios.hotelmate.models.Rooms;
@@ -77,25 +79,25 @@ public class ReservationController {
      */
     @PostMapping("/save")
     public ResponseEntity<?> saveReservation(
-        @Valid @ModelAttribute ReservationsSaveDTO reservationDTO,
-        BindingResult result
-    ){
+            @Valid @ModelAttribute ReservationsSaveDTO reservationDTO,
+            BindingResult result
+    ) {
         Map<String, Object> res = new HashMap<>();
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             List<String> errors = result.getFieldErrors()
-                .stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(Collectors.toList());
-                res.put("Errors", errors);
-                return ResponseEntity.badRequest().body(res);
-        }   
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.toList());
+            res.put("Errors", errors);
+            return ResponseEntity.badRequest().body(res);
+        }
         try {
-            Reservations reservations = reservationsService.save(reservationDTO);
-            res.put("message", "Reservación realizada con exito");
+            Reservations reservations = reservationsService.save(reservationDTO);       
+            res.put("message", "Reservación realizada con éxito");
             res.put("Reservations", reservations);
             return ResponseEntity.ok(res);
         } catch (Exception e) {
-            res.put("message", "Error al registrar la reservacion, intente de nuevo más tarde");
+            res.put("message", "Error al registrar la reservación, intente de nuevo más tarde");
             res.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }

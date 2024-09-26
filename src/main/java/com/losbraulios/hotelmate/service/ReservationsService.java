@@ -14,6 +14,7 @@ import com.losbraulios.hotelmate.models.Clients;
 import com.losbraulios.hotelmate.models.Reservations;
 import com.losbraulios.hotelmate.models.Rooms;
 import com.losbraulios.hotelmate.repository.ReservationsRepository;
+import com.losbraulios.hotelmate.repository.RoomRepository;
 import com.losbraulios.hotelmate.service.IService.IReservationsService;
 
 
@@ -21,9 +22,12 @@ import com.losbraulios.hotelmate.service.IService.IReservationsService;
 public class ReservationsService implements IReservationsService{
     @Autowired
     ReservationsRepository reservationsRepository;
-
+    
     @Autowired
     RoomService roomService;
+
+    @Autowired
+    RoomRepository roomRepository;
 
     @Autowired
     ClientService clientsService;
@@ -46,7 +50,7 @@ public class ReservationsService implements IReservationsService{
             Timestamp startDate = Timestamp.valueOf(reservationDTO.getStarDate());
             Timestamp endDate = Timestamp.valueOf(reservationDTO.getEndDate());  
             Clients clients = clientsService.findByIdClient(reservationDTO.getClientsId());
-            Rooms room = roomService.findByIdRoom(reservationDTO.getIdReservation());
+            Rooms room = roomService.findByIdRoom(reservationDTO.getRoomId());
             Reservations reservation = new Reservations(
             null,
             reservationDTO.getDescriptionReservation(),
@@ -55,6 +59,15 @@ public class ReservationsService implements IReservationsService{
             room,
             clients
             );
+
+            if (room != null) {
+                // Incrementar el contador de reservas
+                room.incrementReservationCount();
+                
+                // Guardar el nuevo estado de la habitación
+                roomRepository.save(room);
+            }
+
             return reservationsRepository.save(reservation);
         }catch(Exception e){
             throw new IllegalArgumentException("Error al parsear las fechas", e);

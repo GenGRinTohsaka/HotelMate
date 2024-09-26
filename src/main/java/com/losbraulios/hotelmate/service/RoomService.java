@@ -63,7 +63,8 @@ public class RoomService implements IRoomService{
                 roomDTO.getDayPrice(),
                 roomDTO.getRoomType(),
                 roomDTO.getRoomCapacity(),
-                hotel // Relaciona la habitación con el hotel
+                hotel,// Relaciona la habitación con el hotel
+                null 
             );
     
             // Guarda la habitación en la base de datos y retorna la entidad guardada
